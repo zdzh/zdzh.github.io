@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="存储器和总线框架系统构架 四个驱动单元   Cortex™-M3内核DCode总线(D-bus)，和系统总线(S-bus） 通用DMA1和通用DMA2   四个被动单元   内部SARM 内部闪存存储器 FSMC AHB到APB的桥，它连接支持所有APB设备    ICode总线该总线将Cortex™-M3内核的指令总线与闪存指令接口相连接。指令预取在此总线上完成。    DCode总线该总线将C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32存储器和总线框架">
+<meta property="og:url" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="存储器和总线框架系统构架 四个驱动单元   Cortex™-M3内核DCode总线(D-bus)，和系统总线(S-bus） 通用DMA1和通用DMA2   四个被动单元   内部SARM 内部闪存存储器 FSMC AHB到APB的桥，它连接支持所有APB设备    ICode总线该总线将Cortex™-M3内核的指令总线与闪存指令接口相连接。指令预取在此总线上完成。    DCode总线该总线将C">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6.assets/1563448621651.png">
+<meta property="article:published_time" content="2019-05-18T11:26:13.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.115Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6.assets/1563448621651.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>stm32存储器和总线框架 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32存储器和总线框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="存储器和总线框架"><a href="#存储器和总线框架" class="headerlink" title="存储器和总线框架"></a>存储器和总线框架</h1><h2 id="系统构架"><a href="#系统构架" class="headerlink" title="系统构架"></a>系统构架</h2><ul>
+<li>四个驱动单元</li>
+</ul>
+<ol>
+<li>Cortex™-M3内核DCode总线(D-bus)，和系统总线(S-bus）</li>
+<li>通用DMA1和通用DMA2</li>
+</ol>
+<ul>
+<li>四个被动单元</li>
+</ul>
+<ol>
+<li>内部SARM</li>
+<li>内部闪存存储器</li>
+<li>FSMC</li>
+<li>AHB到APB的桥，它连接支持所有APB设备<br><img src="%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6.assets/1563448621651.png" alt="1563448621651"></li>
+</ol>
+<hr>
+<ul>
+<li><strong>ICode总线</strong><br>该总线将Cortex™-M3<strong>内核的指令总线</strong>与<strong>闪存指令接口</strong>相连接。指令预取在此总线上完成。   </li>
+<li>DCode总线<br>该总线将Cortex™-M3内核的DCode总线与闪存存储器的数据接口相连接(常量加载和调试访问)。      </li>
+<li>系统总线<br>此总线连接Cortex™-M3内核的系统总线(外设总线)到总线矩阵，总线矩阵协调着内核和DMA间的访问。   </li>
+<li>DMA总线<br>此总线将DMA的AHB主控接口与总线矩阵相联，总线矩阵协调着CPU的DCode和DMA到SRAM、闪存和外设的访问。   </li>
+<li>总线矩阵<br>总线矩阵协调内核系统总线和DMA主控总线之间的访问仲裁，仲裁利用轮换算法。</li>
+<li>AHB/APB桥(APB)<br>两个AHB/APB桥在AHB和2个APB总线间提供同步连接。APB1操作速度限于36MHz，APB2操作于全速(最高72MHz)。在每一次复位以后，所有除SRAM和FLITF以外的外设都被关闭，在使用一个外设之前，必须设置寄存器RCC_AHBENR来打开该外设的时钟。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stm32/" rel="tag"># stm32</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/" rel="prev" title="STM引脚设置">
+      <i class="fa fa-chevron-left"></i> STM引脚设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/EXTI%E2%80%94%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD(%E4%BA%8B%E4%BB%B6)%E6%8E%A7%E5%88%B6%E5%99%A8/" rel="next" title="STM32外部中断">
+      STM32外部中断 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#存储器和总线框架"><span class="nav-number">1.</span> <span class="nav-text">存储器和总线框架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统构架"><span class="nav-number">1.1.</span> <span class="nav-text">系统构架</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

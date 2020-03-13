@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="寄存器 什么是寄存器？什么是寄存器映射？ 什么是存储器映射和存储器重映射？ 为什么存储器要重映射？   存储器映射存储器本身不具有地址信息，它的地址是由芯片厂商或用户分配，给存储器分配地址 的过程就称为存储器映射。&#x3D;&#x3D;如果给存储器再分配一个地址就叫存储器重映射。  存储器区域功能划分在这 4GB的地址空间中，ARM已经粗线条的平均分成了 8个块，每块 512MB，每个 块也都规定了用途Boock0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32寄存器">
+<meta property="og:url" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="寄存器 什么是寄存器？什么是寄存器映射？ 什么是存储器映射和存储器重映射？ 为什么存储器要重映射？   存储器映射存储器本身不具有地址信息，它的地址是由芯片厂商或用户分配，给存储器分配地址 的过程就称为存储器映射。&#x3D;&#x3D;如果给存储器再分配一个地址就叫存储器重映射。  存储器区域功能划分在这 4GB的地址空间中，ARM已经粗线条的平均分成了 8个块，每块 512MB，每个 块也都规定了用途Boock0">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/assets/1563448957348.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/assets/1563448990567.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/assets/1563449045822.png">
+<meta property="article:published_time" content="2019-05-18T11:26:13.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.116Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="stm32">
+<meta property="article:tag" content="寄存器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/assets/1563448957348.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>stm32寄存器 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32寄存器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h1><ul>
+<li>什么是寄存器？什么是寄存器映射？</li>
+<li>什么是存储器映射和存储器重映射？</li>
+<li>为什么存储器要重映射？</li>
+</ul>
+<hr>
+<h2 id="存储器映射"><a href="#存储器映射" class="headerlink" title="存储器映射"></a>存储器映射</h2><p>存储器本身不具有地址信息，它的地址是由芯片厂商或用户分配，给存储器分配地址 的过程就称为<strong>存储器映射</strong>。==如果给存储器再分配一个地址就叫存储器重映射。</p>
+<p><img src="assets/1563448957348.png" alt="存储器映射"></p>
+<h3 id="存储器区域功能划分"><a href="#存储器区域功能划分" class="headerlink" title="存储器区域功能划分"></a>存储器区域功能划分</h3><p>在这 4GB的地址空间中，ARM已经粗线条的平均分成了 8个块，每块 512MB，每个 块也都规定了用途<br><img src="assets/1563448990567.png" alt="存储器功能分类 "><br>Boock0用来设 计成内部 FLASH，Block1用来设计成内部 RAM，Block2用来设计成片上的外设。</p>
+<h2 id="寄存器外设"><a href="#寄存器外设" class="headerlink" title="寄存器外设"></a>寄存器外设</h2><p>在存储器 Block2这块区域，设计的是片上外设，它们以四个字节为一个单元，共 32bit，每一个单元对应不同的功能，当我们控制这些单元时就可以驱动外设工作。我们可 以找到每个单元的起始地址，然后通过 C语言指针的操作方式来访问这些单元，如果每次 都是通过这种地址的方式来访问，不仅不好记忆还容易出错，这时我们可以根据每个单元<br>功能的不同，以功能为名给这个内存单元取一个别名，这个别名就是我们经常说的<strong>寄存器</strong>， 这个给已经分配好地址的有特定功能的内存单元取别名的过程就叫==寄存器映射==。</p>
+<h3 id="外设地址映射"><a href="#外设地址映射" class="headerlink" title="外设地址映射"></a>外设地址映射</h3><p>片上外设区分为四条总线，根据外设速度的不同，不同总线挂载着不同的外设，APB 挂载低速外设，AHB挂载高速外设。相应总线的最低地址我们称为该总线的<strong>基地址</strong>，总线 基地址也是挂载在该总线上的首个外设的地址。其中 APB1总线的地址最低，片上外设从 这里开始，也叫外设基地址。   </p>
+<h4 id="外设基地址"><a href="#外设基地址" class="headerlink" title="外设基地址"></a>外设基地址</h4><p>总线上挂载着各种外设，这些外设也有自己的地址范围，特定外设的首个地址称为 “XX外设基地址”，也叫 XX外设的<strong>边界地址</strong>8。</p>
+<h4 id="外设寄存器"><a href="#外设寄存器" class="headerlink" title="外设寄存器"></a>外设寄存器</h4><p>在 XX外设的地址范围内，分布着的就是该外设的寄存器。以 GPIO 外设为例，GPIO 是通用输入输出端口的简称，简单来说就是 STM32可控制的引脚，基本功能是控制引脚输 出高电平或者低电平。   </p>
+<p><strong><em>寄存器说明</em></strong> </p>
+<ul>
+<li><p>名称 </p>
+</li>
+<li><p>偏移地址<br>是指本寄存器相对于这个外设的基地址的偏移。</p>
+</li>
+<li><p>寄存器位表</p>
+</li>
+<li><p>功能说明<br>详细介绍寄存器每一位的功能。</p>
+<p> <img src="assets/1563449045822.png" alt=" GPIO 端口置位/复位寄存器说明">   </p>
+<hr>
+</li>
+<li><blockquote>
+<p>存储器block2上设计的是片上外设，以四个字节为一个单元，每个单元负责不同功能。根据每个单元功能的不同，以功能为名给内存单元取别名，别名即为寄存器。给分配好地址的有特定功能的内存单元取名的过程为寄存器映射。          </p>
+</blockquote>
+</li>
+</ul>
+<p>寄存器是特定功能的内存单元的别称，方便我们使用该内存单元。寄存器映射是给内存单元取别名的过程。           </p>
+<ul>
+<li><blockquote>
+<p>存储器本身不具有地址信息，它的地址是由芯片厂商或用户分配，给存储器分配地址 的过程就称为存储器映射,如果给存储器再分配一个地址就叫存储器重映射。 </p>
+</blockquote>
+</li>
+</ul>
+<p>存储器映射是指厂商或用户给存储器分配空间的过程，存储器重映射是指在存 储器映射的基础上，给存储器再分配地 址的过程</p>
+<ul>
+<li><blockquote>
+<p>存储器重映射就是为了快速响应中断或者快速完成某个任务，将同一地址段映射到不同速度的两个存储块，然后将低速存储块中的代码段复制到高速存储块中，对低速存储块的访问将被重映射为对高速存储块的访问。 </p>
+</blockquote>
+<blockquote>
+<p>存储器映射是在复位之前由CPU自动完成的，存储器重映射是在复位之后由系统程序完成的。通常的顺序是：上电-&gt;存储器映射-&gt;复位-&gt;存储器重映射-&gt;系统初始化-&gt;启动OS。</p>
+</blockquote>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stm32/" rel="tag"># stm32</a>
+              <a href="/tags/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="tag"># 寄存器</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%BA%93%E5%87%BD%E6%95%B0/" rel="prev" title="stm32库">
+      <i class="fa fa-chevron-left"></i> stm32库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/" rel="next" title="STM引脚设置">
+      STM引脚设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#寄存器"><span class="nav-number">1.</span> <span class="nav-text">寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#存储器映射"><span class="nav-number">1.1.</span> <span class="nav-text">存储器映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储器区域功能划分"><span class="nav-number">1.1.1.</span> <span class="nav-text">存储器区域功能划分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器外设"><span class="nav-number">1.2.</span> <span class="nav-text">寄存器外设</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外设地址映射"><span class="nav-number">1.2.1.</span> <span class="nav-text">外设地址映射</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#外设基地址"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">外设基地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外设寄存器"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">外设寄存器</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Openshift是一个开源的容器云平台，底层基于当前容器的事实标准编排系统Kubernetes和docker引擎，企业可以基于此平台搭建内部Paas平台，贯穿CI&#x2F;CD流程，提高企业IT效率，拥抱DevOps和敏捷开发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openshift一：什么是openshift">
+<meta property="og:url" content="http://yoursite.com/2019/08/12/openshift/openshift%E4%B8%80%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AFopenshift/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="Openshift是一个开源的容器云平台，底层基于当前容器的事实标准编排系统Kubernetes和docker引擎，企业可以基于此平台搭建内部Paas平台，贯穿CI&#x2F;CD流程，提高企业IT效率，拥抱DevOps和敏捷开发。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/zdzh/photo/master/img1/20190812151837.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/zdzh/photo/master/img1/20190812112313.png">
+<meta property="article:published_time" content="2019-08-12T07:01:00.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.231Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="okd">
+<meta property="article:tag" content="openshift">
+<meta property="article:tag" content="Kubernetes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/zdzh/photo/master/img1/20190812151837.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/08/12/openshift/openshift%E4%B8%80%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AFopenshift/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>openshift一：什么是openshift | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/12/openshift/openshift%E4%B8%80%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AFopenshift/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openshift一：什么是openshift
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-12 15:01:00" itemprop="dateCreated datePublished" datetime="2019-08-12T15:01:00+08:00">2019-08-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/openshift/" itemprop="url" rel="index"><span itemprop="name">openshift</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Openshift是一个开源的容器云平台，底层基于当前容器的事实标准编排系统<a href="#%E4%BB%80%E4%B9%88%E6%98%AFKubernetes">Kubernetes</a>和docker引擎，企业可以基于此平台搭建内部<a href="#%E4%BB%80%E4%B9%88%E6%98%AFPaas">Paas</a>平台，贯穿CI/CD流程，提高企业IT效率，拥抱DevOps和敏捷开发。</p>
+<a id="more"></a>
+
+<h2 id="什么是Paas"><a href="#什么是Paas" class="headerlink" title="什么是Paas"></a>什么是Paas</h2><p>PaaS（Platform as a Service，平台即服务）最早是在云计算领域被提出。如下图所示，将企业IT服务分为九层，传统自建数据中心九层设施都需要企业自己维护，成本极高。而云计算架构就相当于把九层架构中的底层一部分外包给云计算服务提供商，根据外包的层次不同，分为IaaS(Infrastructure as a Service，基础设施即服务)，PaaS，SaaS（Software as a Service）三层。</p>
+<ul>
+<li><p>IaaS 层为基础设施运维人员服务、提供计算、存储、网络以及其他硬件资源，云平台使用者可以在上面部署和运行包括操作系统和应用程序在内的任意软件，无需再为基础设施的管理而分心。</p>
+</li>
+<li><p>PaaS 层为应用开发人员服务，提供支撑应用运行所需的软件运行时环境，相关的工具与服务，如数据库服务、日志服务、监控服务等，让应用开发者可以专注于交付业务价值的代码而无需关心应用所需的基础环境与工具。</p>
+</li>
+<li><p>SaaS 层为一般用户（最终用户）服务，提供了一套完整可用的软件系统，让一般用户无需关心技术细节，只需通过浏览器、应用客户端的方式就能使用部署在云上的应用服务。SaaS 产品比如客户关系管理系统、邮件、虚拟桌面、通信、游戏等。<br><img src="https://raw.githubusercontent.com/zdzh/photo/master/img1/20190812151837.png" alt=""></p>
+</li>
+</ul>
+<h2 id="什么是Kubernetes"><a href="#什么是Kubernetes" class="headerlink" title="什么是Kubernetes"></a>什么是Kubernetes</h2><p>Kubernetes是一个开源容器编排引擎，用于自动化容器化应用程序的部署，扩展和管理。 Kubernetes的基本概念包括： </p>
+<ul>
+<li>一个或多个工作节点（worker node）负责工作负载</li>
+<li>一个或多个管理节点（master node）负责管理工作负载</li>
+<li>将容器封装在名为Pod的部署单元，使用Pod为容器提供额外的元数据并且提供在单个部署实体中对多个容器进行分组的功能</li>
+<li>创建特殊的资源。例如，服务表示一组Pod和访问策略，该访问策略允许容器没有特定的ip地址也能连接服务。复制控制器（Replication controllers）是另一种用于控制同一时间的Pod副本数量的特殊资源，可以使用此功能自动扩展应用程序以适应其当前需求。</li>
+</ul>
+<h2 id="什么是OKD"><a href="#什么是OKD" class="headerlink" title="什么是OKD"></a>什么是OKD</h2><p>OKD是Kubernetes的发行版，针对持续应用程序开发和多租户部署进行了优化。OKD在Kubernetes之上添加了开发人员和运营工具，以便为小型和大型团队实现快速的应用程序开发，轻松部署和扩展以及长期生命周期维护。<br>OKD是嵌入了Red Hat OpenShift中的上游Kubernetes发行版，并通过安全性和其他集成概念进行扩展。 OKD在github和文档中也称为Origin。</p>
+<h2 id="openshift层次结构"><a href="#openshift层次结构" class="headerlink" title="openshift层次结构"></a>openshift层次结构</h2><p>OpenShift v3是一个分层系统，旨在尽可能准确地公开底层Docker格式的容器镜像和Kubernetes概念，重点是帮助开发人员轻松组合应用程序。例如，安装Ruby，推送代码和添加MySQL。<br>其中，docker提供了打包和创建基于linux的轻量容器镜像的抽象；Kubernetes提供了集群管理以及在多台主机上编排容器的功能。OKD提供了以下功能 ：</p>
+<ul>
+<li>帮助开发人员管理、构建和部署源代码</li>
+<li>管理和推广大规模的流进系统的镜像</li>
+<li>大规模的应用管理</li>
+<li>组织大型开发人员组织的团队和用户跟踪</li>
+<li>支持群集的网络基础结构</li>
+</ul>
+<p>Openshift 实际上由三部分组成，核心部分实现容器的调度是封装的 Kubernetes， 除此之外还有一个内置的镜像仓库（Image Registry），这个仓库是可选的，Openshift 也可以配置使用 Dockerhub 或者企业自己的镜像仓库，最外层部分是一个友好的 Web 界面，用于展示和操作 Openshift 的资源。<br>如下图所示，Openshift 要成为一个完整的数字化平台需要依赖于两个外部系统，一个代码库，一个是持续集成服务，事实上这两个外部服务也是可以跑在 Openshift 里面的。右边的灰色矩形就是 Openshift 的主要架构了，它的上层是一个路由（Router），用于 DNS 解析和转发，确保用户能够调用到 Openshift 集群中的服务。中间部分是跑在 RHEL 操作系统上的 Kubernetes 集群，侧面是外部存储服务，因为集群里的计算单元是漂浮的，所以通常 Kubernetes 集群只提供计算能力，数据持久外需要依赖外部的比如说 S3，EBS 等云服务商提供的存储服务。最下层同样也是由云服务商提供的基础设施服务。</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/photo/master/img1/20190812112313.png" alt=""></p>
+<h2 id="Pods"><a href="#Pods" class="headerlink" title="Pods"></a>Pods</h2><p>okd引用了kubernetes的pods概念。pods是指在同一台主机上运行的一个或多个容器，它是定义、开发和部署的最小单位。 每个pod都分配有自己的内部IP地址，因此拥有其整个端口空间，pod中的容器可以共享其本地存储和网络。<br>pod的生命周期可以在容器退出时结束，也可以在容器退出后保留pods以方便访问容器日志。<br>pod在运行过程中无法被修改，当需要修改时，需要先停止pod再根据修改后的配置文件和镜像重新创建pod。pod退出时不会保留状态，因此一般通过更高级的控制器管理pods而不是用户直接管理。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://www.duyidong.com/2017/06/14/kubernetes-and-openshift/" target="_blank" rel="noopener">https://www.duyidong.com/2017/06/14/kubernetes-and-openshift/</a></p>
+<p>官网链接:<br><a href="https://www.openshift.com/" target="_blank" rel="noopener">https://www.openshift.com/</a><br><a href="https://access.redhat.com/documentation/en-us/openshift_container_platform/4.1/html/architecture/architecture" target="_blank" rel="noopener">https://access.redhat.com/documentation/en-us/openshift_container_platform/4.1/html/architecture/architecture</a><br><a href="https://docs.okd.io/latest/architecture/index.html" target="_blank" rel="noopener">https://docs.okd.io/latest/architecture/index.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/okd/" rel="tag"># okd</a>
+              <a href="/tags/openshift/" rel="tag"># openshift</a>
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/06/docker/docker%E6%80%BB%E7%BB%93/" rel="prev" title="docker总结">
+      <i class="fa fa-chevron-left"></i> docker总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/08/13/openshift/openshift%E4%BA%8C%EF%BC%9A%E5%AD%98%E5%82%A8/" rel="next" title="openshift一：okd存储">
+      openshift一：okd存储 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Paas"><span class="nav-number">1.</span> <span class="nav-text">什么是Paas</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Kubernetes"><span class="nav-number">2.</span> <span class="nav-text">什么是Kubernetes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是OKD"><span class="nav-number">3.</span> <span class="nav-text">什么是OKD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openshift层次结构"><span class="nav-number">4.</span> <span class="nav-text">openshift层次结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pods"><span class="nav-number">5.</span> <span class="nav-text">Pods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

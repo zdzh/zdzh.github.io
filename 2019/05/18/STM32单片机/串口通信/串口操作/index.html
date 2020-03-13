@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="串口操作[TOC] CreateFile方式函数说明 函数功能这个函数的功能是创建或者打开一个文件或者I&#x2F;O设备，通常使用的I&#x2F;O形式有文件、文件流、目录、物理磁盘、卷、终端流等。如执行成功，则返回文件句柄。 INVALID_HANDLE_VALUE 表示出错，会设置 GetLastError 。  函数原型   123456789HANDLE CreateFile(　　LPCTSTR lpFil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="串口操作">
+<meta property="og:url" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="串口操作[TOC] CreateFile方式函数说明 函数功能这个函数的功能是创建或者打开一个文件或者I&#x2F;O设备，通常使用的I&#x2F;O形式有文件、文件流、目录、物理磁盘、卷、终端流等。如执行成功，则返回文件句柄。 INVALID_HANDLE_VALUE 表示出错，会设置 GetLastError 。  函数原型   123456789HANDLE CreateFile(　　LPCTSTR lpFil">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-18T11:26:13.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.111Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="串口">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>串口操作 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          串口操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="串口操作"><a href="#串口操作" class="headerlink" title="串口操作"></a>串口操作</h1><p>[TOC]</p>
+<h2 id="CreateFile方式"><a href="#CreateFile方式" class="headerlink" title="CreateFile方式"></a>CreateFile方式</h2><h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3><ol>
+<li>函数功能<br>这个函数的功能是创建或者打开一个文件或者I/O设备，通常使用的I/O形式有文件、文件流、目录、物理磁盘、卷、终端流等。如执行成功，则返回文件句柄。 INVALID_HANDLE_VALUE 表示出错，会设置 GetLastError 。 <ol>
+<li>函数原型   <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE <span class="title">CreateFile</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">　　LPCTSTR lpFileName,    <span class="comment">//指向文件名的指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　DWORD dwDesiredAccess,   <span class="comment">//访问模式（写/读）</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　DWORD dwShareMode,     <span class="comment">//共享模式</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　LPSECURITY_ATTRIBUTES lpSecurityAttributes, <span class="comment">//指向安全属性的指针</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　DWORD dwCreationDisposition,    <span class="comment">//如何创建</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　DWORD dwFlagsAndAttributes,   <span class="comment">//文件属性</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　HANDLE hTemplateFile      <span class="comment">//用于复制文件句柄</span></span></span></span><br><span class="line"><span class="function"><span class="params">　　)</span></span>;</span><br></pre></td></tr></table></figure></li>
+<li>参数列表   </li>
+</ol>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lpFileName</td>
+<td>String</td>
+<td>要打开的文件的名字</td>
+</tr>
+<tr>
+<td>dwDesiredAccess</td>
+<td>Long</td>
+<td>表示允许对设备进行读访问；如果为 GENERIC_WRITE 表示允许对设备进行写访问（可组合使用）；如果为零，表示只允许获取与一个设备有关的信息</td>
+</tr>
+<tr>
+<td>dwShareMode</td>
+<td>Long</td>
+<td>零表示不共享； FILE_SHARE_READ 和/或 FILE_SHARE_WRITE 表示允许对文件进行共享访问</td>
+</tr>
+<tr>
+<td>LPSECURITY_ATTRIBUTES</td>
+<td>SECURITY_ATTRIBUTES</td>
+<td>指向一个SECURITY_ATTRIBUTES结构的指针，定义了文件的安全特性（如果操作系统支持的话）</td>
+</tr>
+<tr>
+<td>dwCreationDisposition</td>
+<td>Long</td>
+<td>下述常数之一:<br><strong>CREATE_NEW</strong>创建文件；如文件存在则会出错;<br><strong>CREATE_ALWAYS</strong>创建文件，会改写前一个文件;<br><strong>OPEN_EXISTING</strong>文件必须已经存在。由设备提出要求;<br><strong>OPEN_ALWAYS</strong>如文件不存在则创建它;<br><strong>TRUNCATE_EXISTING</strong> 将现有文件缩短为零长度</td>
+</tr>
+<tr>
+<td>dwFlagsAndAttributes</td>
+<td>Long</td>
+<td>一个或多个下述常数:<br><strong>FILE_ATTRIBUTE_ARCHIVE</strong>标记归档属性;<br><strong>FILE_ATTRIBUTE_COMPRESSED</strong>：将文件标记为已压缩，或者标记为文件在目录中的默认压缩方式;<br><strong>FILE_ATTRIBUTE_NORMAL</strong>默认属性;<br><strong>FILE_ATTRIBUTE_HIDDEN</strong> 隐藏文件或目录; <br><strong>FILE_ATTRIBUTE_READONLY</strong> 文件为只读;<br><strong>FILE_ATTRIBUTE_SYSTEM</strong> 文件为系统文件;<br><strong>FILE_FLAG_WRITE_THROUGH</strong>操作系统不得推迟对文件的写操作;<br><strong>FILE_FLAG_OVERLAPPED</strong> 允许对文件进行重叠操作;<br><strong>FILE_FLAG_NO_BUFFERING</strong> 禁止对文件进行缓冲处理。文件只能写入磁盘卷的扇区块;<br><strong>FILE_FLAG_RANDOM_ACCESS</strong> 针对随机访问对文件缓冲进行优化;<br><strong>FILE_FLAG_SEQUENTIAL_SCAN</strong> 针对连续访问对文件缓冲进行优化;<br><strong>FILE_FLAG_DELETE_ON_CLOSE</strong>; 关闭了上一次打开的句柄后，将文件删除。特别适合临时文件;<br>也可在Windows NT下组合使用下述常数标记：<br>SECURITY_ANONYMOUS， SECURITY_IDENTIFICATION， SECURITY_IMPERSONATION， SECURITY_DELEGATION， SECURITY_CONTEXT_TRACKING， SECURITY_EFFECTIVE_ONLY</td>
+</tr>
+<tr>
+<td>hTemplateFile</td>
+<td>Long</td>
+<td>如果不为零，则指定一个文件句柄。新文件将从这个文件中复制扩展属性<br>返回值<br>如执行成功，则返回文件句柄。<br><strong>INVALID_HANDLE_VALUE</strong>表示出错，会设置<strong>GetLastError</strong>。<br>即使函数成功，但若文件存在，且指定了CREATE_ALWAYS **或 OPEN_ALWAYS，GetLastError也会设为ERROR_ALREADY_EXISTS</td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li>配置</li>
+</ol>
+<ul>
+<li>dwShareMode: 指定端口共享属性<br>该参数是由那些应用程序共享的文件提供。对于串口来说，是<strong>不能共享</strong>的，因此，必须设置为0，这是通信设备与文件的特殊差别。<br>如果当前的应用程序调用CreateFile打开一个串口，另外一个程序如果已经打开了该串口，此时CreateFile会返回一个错误代码。<br>然而，同一个应用程序的多个线程是可以共享CreateFile返回的端口句柄。并且根据安全属性设置，该句柄可以打开端口的应用程序的子程序来继承。</li>
+<li>lpSecurityAttributes:安全属性<br>一般该参数为NULL，即该端口被设置为缺省的安全属性。缺省安全属性下，端口的句柄是不能继承的。</li>
+<li>wCreationDisposition:指定此端口正在被其他程序占用采取的动作<br>因为串口总是存在的，因此必须设置为<strong>OPEN_EXISTing</strong>, 该标志高速Windows不要创建新的端口。而是打开一个已经存在的端口。</li>
+<li>dwFlagsAndSttributes：描述了端口的各种属性<br>对于文件来说有很多属性，但是对于串口来说，唯一的意义是<strong>FILE_FLAG _OVERLAPPED</strong> 属性，当设置该属性时，端口IO可以在后台进行，称为异步IO重叠结构。</li>
+<li>hTemplateFile: 指定模板的文件句柄<br>对于串口来说，此参数必须设置为0；<h3 id="DCB结构体"><a href="#DCB结构体" class="headerlink" title="DCB结构体"></a>DCB结构体</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">DCB</span> &#123;</span> </span><br><span class="line">  DWORD DCBlength; </span><br><span class="line">  DWORD BaudRate; </span><br><span class="line">  DWORD fBinary: <span class="number">1</span>; </span><br><span class="line">  DWORD fParity: <span class="number">1</span>; </span><br><span class="line">  DWORD fOutxCtsFlow:<span class="number">1</span>; </span><br><span class="line">  DWORD fOutxDsrFlow:<span class="number">1</span>; </span><br><span class="line">  DWORD fDtrControl:<span class="number">2</span>; </span><br><span class="line">  DWORD fDsrSensitivity:<span class="number">1</span>; </span><br><span class="line">  DWORD fTXContinueOnXoff:<span class="number">1</span>; </span><br><span class="line">  DWORD fOutX: <span class="number">1</span>; </span><br><span class="line">  DWORD fInX: <span class="number">1</span>; </span><br><span class="line">  DWORD fErrorChar: <span class="number">1</span>; </span><br><span class="line">  DWORD fNull: <span class="number">1</span>; </span><br><span class="line">  DWORD fRtsControl:<span class="number">2</span>; </span><br><span class="line">  DWORD fAbortOnError:<span class="number">1</span>; </span><br><span class="line">  DWORD fDummy2:<span class="number">17</span>; </span><br><span class="line">  WORD wReserved; </span><br><span class="line">  WORD XonLim; </span><br><span class="line">  WORD XoffLim; </span><br><span class="line">  BYTE ByteSize; </span><br><span class="line">  BYTE Parity; </span><br><span class="line">  BYTE StopBits; </span><br><span class="line">  <span class="keyword">char</span> XonChar; </span><br><span class="line">  <span class="keyword">char</span> XoffChar; </span><br><span class="line">  <span class="keyword">char</span> ErrorChar; </span><br><span class="line">  <span class="keyword">char</span> EofChar; </span><br><span class="line">  <span class="keyword">char</span> EvtChar; </span><br><span class="line">  WORD wReserved1; </span><br><span class="line">&#125; DCB;</span><br></pre></td></tr></table></figure>
+<table border="0" cellspacing="0" cellpadding="0"><tbody><tr><td>
+成员
+</td>
+<td colspan="2">
+说明
+</td>
+</tr><tr><td>
+DCBlength
+</td>
+<td colspan="2">
+DCB结构大小，即sizeof (DCB)，在调用SetConmState来更新DCB前必须作设置
+</td>
+</tr><tr><td>
+<p>BaudRate</p>
+</td>
+<td colspan="2">
+<p>指定当前采用的波特率，应与所连接的通讯设备相匹配</p>
+</td>
+</tr><tr><td>
+<p>fBinary</p>
+</td>
+<td colspan="2">
+<p>指定是否允许二进制模式。Win32 API不支持非二进制模式传输，应设置为true</p>
+</td>
+</tr><tr><td>
+<p>fParity</p>
+</td>
+<td colspan="2">
+<p>指定奇偶校验是否允许，在为true时具体采用何种校验看Parity设置</p>
+</td>
+</tr><tr><td rowspan="6">
+<p>Parity</p>
+</td>
+<td colspan="2">
+<p>指定端口数据传输的校验方法。以下是可取值及其意义：</p>
+</td>
+</tr><tr><td>
+<p>取值</p>
+</td>
+<td>
+<p>意义</p>
+</td>
+</tr><tr><td>
+<p>EVENPARITY</p>
+</td>
+<td>
+<p>偶校验(2)</p>
+</td>
+</tr><tr><td>
+<p>MARKPARITY</p>
+</td>
+<td>
+<p>标记校验，所发信息帧第9位恒为1 (3)</p>
+</td>
+</tr><tr><td>
+<p>N0PARITY</p>
+</td>
+<td>
+<p>无校验（0)</p>
+</td>
+</tr><tr><td>
+<p>ODDPARITY</p>
+</td>
+<td>
+<p>奇校验（1)</p>
+</td>
+</tr><tr><td rowspan="5">
+<p>StopBits</p>
+</td>
+<td colspan="2">
+<p>指定端口当前使用的停止位数，可取值：</p>
+</td>
+</tr><tr><td>
+<p>取值</p>
+</td>
+<td>
+<p>意义</p>
+</td>
+</tr><tr><td>
+<p>0NEST0PBIT</p>
+</td>
+<td>
+<p>1停止位（0)</p>
+</td>
+</tr><tr><td>
+<p>0NE5ST0PBITS</p>
+</td>
+<td>
+<p>1.5停止位（1)</p>
+</td>
+</tr><tr><td>
+<p>TW0ST0PBITS</p>
+</td>
+<td>
+<p>2停止位（2)</p>
+</td>
+</tr><tr><td>
+<p>fErrorChar</p>
+</td>
+<td colspan="2">
+<p>该值为TRUE，则用ErrorChar指定的字符代替奇偶校验错误的接收字符</p>
+</td>
+</tr><tr><td>
+<p>ErrorChar</p>
+</td>
+<td colspan="2">
+<p>指定ErrorChar字符（代替接收到的奇偶校验发生错误时的字节）</p>
+</td>
+</tr><tr><td>
+<p>EvtChar</p>
+</td>
+<td colspan="2">
+<p>当接收到此字符时,会产生一个EV_RXFLAG事件，如果用SetCommMask函数中指定了 EV_RXFLAG，则可用WaitCommEvent来监测该事件</p>
+</td>
+</tr><tr><td>
+<p>EofChar</p>
+</td>
+<td colspan="2">
+<p>指定用于标示数据结束的字符</p>
+</td>
+</tr><tr><td>
+<p>fNull</p>
+</td>
+<td colspan="2">
+<p>为TRUE时，接收时自动去掉空（0值）字节</p>
+</td>
+</tr><tr><td>
+<p>fAbortOnError</p>
+</td>
+<td colspan="2">
+<p>读写操作发生错误时是否取消操作。若设置为true，则当发生读写错误时，将取消 所有读写操作（错误状态置为ERR0R_I0_AB0RTm))，直到调用ClearConmError函数 后才能重新进行通讯操作</p>
+</td>
+</tr><tr><td>
+<p>fOutxCtsFlow</p>
+</td>
+<td colspan="2">
+<p>是否监控CTS(clear-to-send)信号来做输出流控。当设置为true时：</p>
+<p>若CTS为低电平，则数据发送将被挂起，直至CTS变为高。</p>
+<p>CTS的信号一般由DCE (通常是一个Modem)来控制，而DTE (通常是计算机）发送数 据时监测CTS信号。也就是说DCE通过把CTS置高来表明自己可以接收数据了</p>
+</td>
+</tr><tr><td rowspan="6">
+<p>fRtsControl</p>
+</td>
+<td colspan="2">
+<p>设置 RTS (reciiiest-to-send)流控，若为 0 则缺省取值 RTS_CONTROL_HANDSHAKE。以 下是可取值及其意义：</p>
+</td>
+</tr>
+<td>
+<p>取值</p>
+</td>
+<td>
+<p>意义</p>
+</td>
+</tr><tr>
+<td>
+<p>RTS_CONTROL_DISABLE</p>
+</td>
+<td>
+<p>打开设备时置RTS信号为低电平，应用程序可通过调用 EscapeCoranFunction函数来改变RTS线电平状态</p>
+</td>
+</tr><tr>
+<td>
+<p>RTS_CONTROL_ENABLE</p>
+</td>
+<td>
+<p>打开设备时置RTS信号为高电平，应用程序可通过调用 EscapeCoranFunction函数来改变RTS线电平状态</p>
+</td>
+</tr><tr>
+<td>
+<p>RTS_CONTROL_HANDSHAKE</p>
+</td>
+<td>
+<p>允许RTS信号握手，此时应用程序不能调用 EscapeCoranFunction函数。当输入缓冲区己经有足够空间 接收数据时，驱动程序置RTS为高以便允许DCE来发送； 1之置RTS为低以阻止DCE发送数据。</p>
+</td>
+</tr><tr>
+<td>
+<p>RTS_C0NTR0L_T0GGLE</p>
+</td>
+<td>
+<p>有字节要发送时RTS变高，当所有缓冲字节己经被发送完 毕后，RTS变低。此时应用程序不能调用 EscapeCoranFunction函数。该值在Windows 95系统被忽略</p>
+</td>
+</tr><tr><td>
+<p>fOutxDsrFlow</p>
+</td>
+<td colspan="2">
+<p>是否监控DSR (data-set-ready)信号来做输出流控。当设置为true时：</p>
+<p>若DSR为低电平，则数据发送将被挂起，直至DSR变为高。DSR的信号一般由DCE来 控制</p>
+</td>
+</tr><tr><td rowspan="5">
+<p>fDtrControl</p>
+</td>
+<td colspan="2">
+<p>DTR (data-terminal-ready)流控，可取值如下：</p>
+</td>
+</tr><tr><td>
+<p>取值</p>
+</td>
+<td>
+<p>意义</p>
+</td>
+</tr><tr><td>
+<p>DTR_CONTROL_DISABLE</p>
+</td>
+<td>
+<p>打开设备时置DTR信号为低电平，应用程序可通过调用 EscapeCoranFunction函数来改变DTR线电平状态</p>
+</td>
+</tr><tr><td>
+<p>DTR_CONTROL_ENABLE</p>
+</td>
+<td>
+<p>打开设备时置DTR信号为高电平，应用程序可通过调用 EscapeCoranFunction函数来改变DTR线电平状态</p>
+</td>
+</tr><tr><td>
+<p>DTR_CONTROL_HANDSHAKE</p>
+</td>
+<td>
+<p>允许DTR信号握手，此时应用程序不能调用 EscapeCoranFunction 函数</p>
+</td>
+</tr><tr><td>
+<p>fDsrSensitivity i      1</p>
+</td>
+<td colspan="2">
+<p>通讯设备是否对DSR信号敏感。若设置为TRUE，则当DSR为低时将会忽略所有接收 亟字节</p>
+</td>
+</tr><tr><td>
+<p>fTXCont inueOnXoff</p>
+</td>
+<td colspan="2">
+<p>当输入缓冲区满且驱动程序己发出XOFF字符时，是否停止发送。当为TRUE时，X0FF 被发送后发送仍然会继续；为FALSE时，发送停止，直至输入缓冲区有XonLim字节 的空余空间、驱动程序己发送X0N字符之后发送继续。</p>
+</td>
+</tr><tr><td>
+<p>fOutX</p>
+</td>
+<td colspan="2">
+<p>X0N/X0FF流量控制在发送时是否可用。如果为TRUE,当X0FF值被收到的时候，发 送停止；当X0N值被收到的时候，发送继续</p>
+</td>
+</tr><tr><td>
+<p>flnX</p>
+</td>
+<td colspan="2">
+<p>X0N/X0FF流量控制在接收时是否可用。如果为TRUE,当输入缓冲区己接收满 XoffLim字节时，发送X0FF字符；当输入缓冲区己经有XonLim字节的空余容量时， 发送X0N字符</p>
+</td>
+</tr><tr><td>
+<p>XonLim</p>
+</td>
+<td colspan="2">
+<p>在X0N字符发送前接收缓冲区内可允许的最小字节数</p>
+</td>
+</tr><tr><td>
+<p>XoffLim</p>
+</td>
+<td colspan="2">
+<p>在X0FF字符发送前接收缓冲区内可允许的最大字节数</p>
+</td>
+</tr><tr><td>
+<p>XonChar</p>
+</td>
+<td colspan="2">
+<p>指定X0N字符</p>
+</td>
+</tr><tr><td>
+<p>XoffChar</p>
+</td>
+<td colspan="2">
+<p>指定X0FF字符</p>
+</td>
+</tr><tr><td>
+<p>fDummy2</p>
+</td>
+<td colspan="2">
+<p>保留，未启用</p>
+</td>
+</tr><tr><td>
+<p>wReserved</p>
+</td>
+<td colspan="2">
+未启用，i须设置为0
+</td>
+</tr><tr><td>
+wReservedl
+</td>
+<td colspan="2">
+保留，未启用
+</td>
+</tbody>
+</td>
+</tr></tbody></table><p> </p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%B8%B2%E5%8F%A3/" rel="tag"># 串口</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E8%A1%8C%E9%80%9A%E4%BF%A1/" rel="prev" title="串口通信">
+      <i class="fa fa-chevron-left"></i> 串口通信
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E6%97%B6%E9%92%9F%E7%B3%BB%E7%BB%9F/" rel="next" title="stm32时钟系统">
+      stm32时钟系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#串口操作"><span class="nav-number">1.</span> <span class="nav-text">串口操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CreateFile方式"><span class="nav-number">1.1.</span> <span class="nav-text">CreateFile方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数说明"><span class="nav-number">1.1.1.</span> <span class="nav-text">函数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DCB结构体"><span class="nav-number">1.1.2.</span> <span class="nav-text">DCB结构体</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

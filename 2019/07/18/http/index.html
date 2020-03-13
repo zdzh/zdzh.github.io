@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="HTTP&#x2F;HTTPS协议URL&#x2F;URI URI 用字符串标识某一互联网资源，而 URL 表示资源的地点（互联 网上所处的位置）。可见 URL 是 URI 的子集。   123456&#x2F;&#x2F;URI绝对格式http:&#x2F;&#x2F;user:pass@www.example.jp:80&#x2F;dir&#x2F;index.html?uid&#x3D;1#ch1&lt;-!  方案名：&#x2F;&#x2F;登录信息@服务器地址:端口号&#x2F;文件路径?查询字符#片段标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP&#x2F;HTTPS协议">
+<meta property="og:url" content="http://yoursite.com/2019/07/18/http/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="HTTP&#x2F;HTTPS协议URL&#x2F;URI URI 用字符串标识某一互联网资源，而 URL 表示资源的地点（互联 网上所处的位置）。可见 URL 是 URI 的子集。   123456&#x2F;&#x2F;URI绝对格式http:&#x2F;&#x2F;user:pass@www.example.jp:80&#x2F;dir&#x2F;index.html?uid&#x3D;1#ch1&lt;-!  方案名：&#x2F;&#x2F;登录信息@服务器地址:端口号&#x2F;文件路径?查询字符#片段标">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/20190327172847876-1553845578881.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/20190327172941876.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/20190327173152645.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/1553841420781.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/1553885477520.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/1553889339542.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/http/assets/1553905547631.png">
+<meta property="article:published_time" content="2019-07-18T10:42:50.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.228Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="http">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/18/http/assets/20190327172847876-1553845578881.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/07/18/http/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>HTTP/HTTPS协议 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/18/http/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HTTP/HTTPS协议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-18 18:42:50" itemprop="dateCreated datePublished" datetime="2019-07-18T18:42:50+08:00">2019-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/http/" itemprop="url" rel="index"><span itemprop="name">http</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="HTTP-HTTPS协议"><a href="#HTTP-HTTPS协议" class="headerlink" title="HTTP/HTTPS协议"></a>HTTP/HTTPS协议</h1><h2 id="URL-URI"><a href="#URL-URI" class="headerlink" title="URL/URI"></a>URL/URI</h2><blockquote>
+<p>URI 用字符串标识某一互联网资源，而 URL 表示资源的地点（互联 网上所处的位置）。可见 URL 是 URI 的子集。 </p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//URI绝对格式</span><br><span class="line">http://user:pass@www.example.jp:80/dir/index.html?uid=1#ch1</span><br><span class="line"><span class="tag">&lt;<span class="name">-!</span>  方案名：//登录信息@服务器地址<span class="attr">:</span>端口号/文件路径?查询字符#片段标识符 &gt;</span></span><br><span class="line"></span><br><span class="line">https://blog.csdn.net/weixin_39780047/article/details/88850857</span><br><span class="line"><span class="tag">&lt;<span class="name">协议</span>&gt;</span>：//<span class="tag">&lt;<span class="name">host</span>&gt;</span>:<span class="tag">&lt;<span class="name">port</span>&gt;</span>/<span class="tag">&lt;<span class="name">路径</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><em>http默认端口是80，可省略</em></li>
+<li>省略路径时，默认指向主页<h2 id="操作过程"><a href="#操作过程" class="headerlink" title="操作过程"></a>操作过程</h2></li>
+</ul>
+<ol>
+<li>浏览器从 URL 中解析出服务器的主机名； </li>
+<li>浏览器将服务器的主机名转换成服务器的 IP 地址；</li>
+<li>浏览器将端口号（如果有的话）从 URL 中解析出来；</li>
+<li>浏览器建立一条与 Web 服务器的 TCP 连接； </li>
+<li>浏览器向服务器发送一条 HTTP 请求报文； </li>
+<li>服务器向浏览器回送一条 HTTP 响应报文；</li>
+<li>关闭连接，浏览器显示文档</li>
+</ol>
+<ul>
+<li>http1.0是无状态的，每次访问数据时都要进行tcp的连接和释放。http1.1之后采用持续连接方式，tcp连接在完成请求后依然保留一段时间，可重复使用<h2 id="代理服务器"><a href="#代理服务器" class="headerlink" title="代理服务器"></a>代理服务器</h2><blockquote>
+<p>代理服务器将最近的一些请求和响应暂存在本地中。当新请求到到达时，若代理服务器中包含相同资源，则返回暂存的请求响应。否则通过因特网获取请求响应并复制一份在本地(缓存服务器)</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>使用代理服务器的理由</strong></p>
+<blockquote>
+<p>利用缓存技术（稍后讲解）减少网络带宽 的流量，组织内部针对特定网站的访问控制，以获取访问日志为主要 目的，等等。</p>
+</blockquote>
+<h2 id="报文结构"><a href="#报文结构" class="headerlink" title="报文结构"></a>报文结构</h2><p>http分为请求报文和响应报文</p>
+<p><img src="assets/20190327172847876-1553845578881.jpg" alt="请求报文"></p>
+<p><img src="assets/20190327172941876.jpg" alt="响应报文"></p>
+<h3 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h3><table>
+<thead>
+<tr>
+<th>1**</th>
+<th>通知信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2**</td>
+<td>表示成功</td>
+</tr>
+<tr>
+<td>3**</td>
+<td>重定向，还需要采取进一步行动</td>
+</tr>
+<tr>
+<td>4**</td>
+<td>客户端错误，语法错误活无法完成请求</td>
+</tr>
+<tr>
+<td>5**</td>
+<td>服务器错误，服务器在处理过程中发送生错误</td>
+</tr>
+</tbody></table>
+<p>常见状态：</p>
+<ul>
+<li>202 Accepted    接受</li>
+<li>400 Bad Request  错误请求</li>
+<li>404 Not Found 找不到</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><img src="assets/20190327173152645.jpg" alt="方法"></p>
+<h3 id="首部字段名"><a href="#首部字段名" class="headerlink" title="首部字段名"></a>首部字段名</h3><ol>
+<li>通用首部字段</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>首部字段名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cache-Control</td>
+<td>控制缓存的行为</td>
+</tr>
+<tr>
+<td>Connection</td>
+<td>逐跳首部、连接的管理</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>创建报文的日期时间</td>
+</tr>
+<tr>
+<td>Pragma</td>
+<td>报文指令</td>
+</tr>
+<tr>
+<td>Trailer</td>
+<td>报文末端的首部一览</td>
+</tr>
+<tr>
+<td>Transfer-Encoding</td>
+<td>指定报文主体的传输编码方式</td>
+</tr>
+<tr>
+<td>Upgrade</td>
+<td>升级为其他协议</td>
+</tr>
+<tr>
+<td>Via</td>
+<td>代理服务器的相关信息</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>错误通知</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li><p>请求首部字段</p>
+<table>
+<thead>
+<tr>
+<th>首部字段名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accept</td>
+<td>用户代理可处理的媒体类型</td>
+</tr>
+<tr>
+<td>Accept-Charset</td>
+<td>优先的字符集</td>
+</tr>
+<tr>
+<td>Accept-Encoding</td>
+<td>优先的内容编码</td>
+</tr>
+<tr>
+<td>Accept-Language</td>
+<td>优先的语言（自然语言）</td>
+</tr>
+<tr>
+<td>Authorization</td>
+<td>Web认证信息</td>
+</tr>
+<tr>
+<td>Expect</td>
+<td>期待服务器的特定行为</td>
+</tr>
+<tr>
+<td>From</td>
+<td>用户的电子邮箱地址</td>
+</tr>
+<tr>
+<td>Host</td>
+<td>请求资源所在服务器</td>
+</tr>
+<tr>
+<td>If-Match</td>
+<td>比较实体标记（ETag）</td>
+</tr>
+<tr>
+<td>If-Modified-Since</td>
+<td>比较资源的更新时间</td>
+</tr>
+<tr>
+<td>If-None-Match</td>
+<td>比较实体标记（与 If-Match 相反）</td>
+</tr>
+<tr>
+<td>If-Range</td>
+<td>资源未更新时发送实体 Byte 的范围请求</td>
+</tr>
+<tr>
+<td>If-Unmodified-Since</td>
+<td>比较资源的更新时间（与If-Modified-Since相反）</td>
+</tr>
+<tr>
+<td>Max-Forwards</td>
+<td>最大传输逐跳数</td>
+</tr>
+<tr>
+<td>Proxy-Authorization</td>
+<td>代理服务器要求客户端的认证信息</td>
+</tr>
+<tr>
+<td>Range</td>
+<td>实体的字节范围请求</td>
+</tr>
+<tr>
+<td>Referer</td>
+<td>对请求中 URI 的原始获取方</td>
+</tr>
+<tr>
+<td>TE</td>
+<td>传输编码的优先级</td>
+</tr>
+<tr>
+<td>User-Agent</td>
+<td>HTTP 客户端程序的信息</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<ol start="3">
+<li><p>响应首部字段</p>
+<table>
+<thead>
+<tr>
+<th>首部字段名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accept-Ranges</td>
+<td>是否接受字节范围请求</td>
+</tr>
+<tr>
+<td>Age</td>
+<td>推算资源创建经过时间</td>
+</tr>
+<tr>
+<td>ETag</td>
+<td>资源的匹配信息</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>令客户端重定向至指定URI</td>
+</tr>
+<tr>
+<td>Proxy-Authenticate</td>
+<td>代理服务器对客户端的认证信息</td>
+</tr>
+<tr>
+<td>Retry-After</td>
+<td>对再次发起请求的时机要求</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>HTTP服务器的安装信息</td>
+</tr>
+<tr>
+<td>Vary</td>
+<td>代理服务器缓存的管理信息</td>
+</tr>
+<tr>
+<td>WWW-Authenticate</td>
+<td>服务器对客户端的认证信息</td>
+</tr>
+<tr>
+<td>4. 实体首部字段</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>   <img src="assets/1553841420781.png" alt="实体首部字段"></p>
+<ol start="5">
+<li>cookie</li>
+</ol>
+</li>
+</ol>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>常用端口：443</p>
+<ul>
+<li><p>HTTP+ 加密 + 认证 + 完整性保护 =HTTPS </p>
+<p><img src="assets/1553885477520.png" alt="1553885477520"></p>
+</li>
+<li><p>https采用共享密钥和公钥加密（处理慢，安全性高）两者并用的混合加密机制</p>
+<ol>
+<li>使用公钥加密交换共享密钥</li>
+<li>使用共享密钥进行通信</li>
+</ol>
+</li>
+</ul>
+<h2 id="HTTP追加协议"><a href="#HTTP追加协议" class="headerlink" title="HTTP追加协议"></a>HTTP追加协议</h2><h3 id="解决HTTP性能瓶颈"><a href="#解决HTTP性能瓶颈" class="headerlink" title="解决HTTP性能瓶颈"></a>解决HTTP性能瓶颈</h3><ul>
+<li><p>Ajax——局部更新</p>
+</li>
+<li><p>Comet——保留响应</p>
+<ul>
+<li><p>SPYD</p>
+<blockquote>
+<p>SPDY 没有完全改写 HTTP 协议，而是在 TCP/IP 的应用层与运输层之 间通过新加会话层的形式运作。同时，考虑到安全性问题，SPDY 规 定通信中使用 SSL。 </p>
+</blockquote>
+<p><img src="assets/1553889339542.png" alt="1553889339542"></p>
+</li>
+<li><p>WebSocket</p>
+<blockquote>
+<p>一旦 Web 服务器与客户端之间建立起 WebSocket 协议的通信连接， 之后所有的通信都依靠这个专用协议进行。通信过程中可互相发送 JSON、XML、HTML 或图片等任意格式的数据。 由于是建立在 HTTP 基础上的协议，因此<strong>连接的发起方仍是客户端， 而一旦确立 WebSocket 通信连接，不论服务器还是客户端，任意一方 都可直接向对方发送报文</strong>。</p>
+<p>为了实现 WebSocket 通信，需要用到 HTTP 的 Upgrade 首部字 段，告知服务器通信协议发生改变，以达到握手的目的</p>
+</blockquote>
+<p>特点</p>
+<ol>
+<li>推送功能 ……服务器-&gt;客户端</li>
+<li>减少通信量  ……保持连接状态，首部信息较少</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Web攻击"><a href="#Web攻击" class="headerlink" title="Web攻击"></a>Web攻击</h2><ul>
+<li><p>Web 应用端（服务器端）的验证</p>
+</li>
+<li><p>跨站脚本攻击 </p>
+</li>
+<li><p>对用户 Cookie 的窃取攻击</p>
+</li>
+<li><p>SQL 注入攻击 </p>
+</li>
+<li><p>OS 命令注入攻击 </p>
+</li>
+<li><p>目录遍历攻击 </p>
+</li>
+<li><p>远程文件包含漏洞 </p>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>思维导图</p>
+<p><img src="assets/1553905547631.png" alt="1553905547631"></p>
+<ul>
+<li><p>用单台虚拟主机实现多个域名</p>
+<blockquote>
+<p>提 供 Web 托管服务（Web Hosting Service）的供应商，可以用一台服务 器为多位客户服务，也可以以每位客户持有的域名运行各自不同的网 站。这是因为利用了虚拟主机（Virtual Host，又称虚拟服务器）的功 能。</p>
+</blockquote>
+<p>位于同一台服务器上的web服务器经过域名转换后，IP地址相同。因此在发送HTTP请求的时候，必须在host首部内完整指出主机名或域名的URI。</p>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <p>客户端如何知道web服务通过虚拟主机？</p>
+</li>
+<li><p>在host首部字段说明完整的域名，通过域名来区分同一服务器上的虚拟主机</p>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <p>URL和URI的区别</p>
+</li>
+</ul>
+<blockquote>
+<p>URL：(Uniform/Universal Resource Locator 的缩写，统一资源定位符) </p>
+<p>URI：(Uniform Resource Identifier 的缩写，统一资源标识符)（代表一种标准）。 </p>
+</blockquote>
+<p>URI 属于 URL 更高层次的抽象，一种字符串文本标准。 </p>
+<p>URL是一种具体的URI，它是URI的一个子集，它不仅唯一标识资源，而且还提供了定位该资源的信息。URI 是一种语义上的抽象概念，可以是绝对的，也可以是相对的，而URL则必须提供足够的信息来定位，是绝对的。 </p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> GET和POST的区别</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>GET</th>
+<th>POST</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>回退时</td>
+<td>无害</td>
+<td>再次请求</td>
+</tr>
+<tr>
+<td>cache</td>
+<td>会</td>
+<td>需要手动设置</td>
+</tr>
+<tr>
+<td>编码</td>
+<td>URL</td>
+<td>多种编码</td>
+</tr>
+<tr>
+<td>浏览器历史记录</td>
+<td>保留</td>
+<td>不保留</td>
+</tr>
+<tr>
+<td>长度限制</td>
+<td>受浏览器限制</td>
+<td>无</td>
+</tr>
+<tr>
+<td>参数数据类型</td>
+<td>ASCII</td>
+<td>任意</td>
+</tr>
+<tr>
+<td>传递方式</td>
+<td>URL</td>
+<td>request body</td>
+</tr>
+<tr>
+<td><strong>传输数据包</strong></td>
+<td>1个</td>
+<td>2个</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>两者本质上都是采用TCP协议进行传输，因此在传输过程中没有差异</strong></p>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <p>幂等请求 </p>
+</li>
+</ul>
+<blockquote>
+<p><strong>HTTP幂等方法，是指无论调用这个url多少次，都不会有不同的结果的HTTP方法。</strong> </p>
+</blockquote>
+<p>HTTP GET方法用于获取资源，不应有副作用，所以是幂等的。 GET请求可能会每次得到<strong>不同的结果</strong>，但它本身并<strong>没有产生任何副作用</strong>，因而是满足幂等性的。 </p>
+<p><em>调用多次的结果和调用一次的结果一致，如DELETE调用一次删除指定资源，再次调用无论该资源是否存在，依然删除该资源。因此其是幂等</em></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+              <a href="/tags/http/" rel="tag"># http</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="prev" title="计算机网络">
+      <i class="fa fa-chevron-left"></i> 计算机网络
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/18/go%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="go语言学习笔记">
+      go语言学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-HTTPS协议"><span class="nav-number">1.</span> <span class="nav-text">HTTP&#x2F;HTTPS协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#URL-URI"><span class="nav-number">1.1.</span> <span class="nav-text">URL&#x2F;URI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作过程"><span class="nav-number">1.2.</span> <span class="nav-text">操作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理服务器"><span class="nav-number">1.3.</span> <span class="nav-text">代理服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#报文结构"><span class="nav-number">1.4.</span> <span class="nav-text">报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态码"><span class="nav-number">1.4.1.</span> <span class="nav-text">状态码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">1.4.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#首部字段名"><span class="nav-number">1.4.3.</span> <span class="nav-text">首部字段名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS"><span class="nav-number">1.5.</span> <span class="nav-text">HTTPS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP追加协议"><span class="nav-number">1.6.</span> <span class="nav-text">HTTP追加协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决HTTP性能瓶颈"><span class="nav-number">1.6.1.</span> <span class="nav-text">解决HTTP性能瓶颈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web攻击"><span class="nav-number">1.7.</span> <span class="nav-text">Web攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.8.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

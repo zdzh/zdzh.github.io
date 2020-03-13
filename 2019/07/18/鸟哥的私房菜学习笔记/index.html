@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基础篇第二章 主机规划与磁盘分区各硬件在linux中的文件名   设备 文件名    SCSI&#x2F;SATA&#x2F;USB硬盘机 &#x2F;dev&#x2F;sd[a-p]   USB闪存 &#x2F;dev&#x2F;sd[a-p]   virtl&#x2F;IO界面 &#x2F;dev&#x2F;vd[0-7] (用于虚拟机内)   软盘机 &#x2F;dev&#x2F;fd[0-7]   打印机 &#x2F;dev&#x2F;lp[0-2] (15针) &#x2F;dev&#x2F;usb&#x2F;lp[0-15] （USB）   鼠">
+<meta property="og:type" content="article">
+<meta property="og:title" content="鸟哥的私房菜学习笔记">
+<meta property="og:url" content="http://yoursite.com/2019/07/18/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="基础篇第二章 主机规划与磁盘分区各硬件在linux中的文件名   设备 文件名    SCSI&#x2F;SATA&#x2F;USB硬盘机 &#x2F;dev&#x2F;sd[a-p]   USB闪存 &#x2F;dev&#x2F;sd[a-p]   virtl&#x2F;IO界面 &#x2F;dev&#x2F;vd[0-7] (用于虚拟机内)   软盘机 &#x2F;dev&#x2F;fd[0-7]   打印机 &#x2F;dev&#x2F;lp[0-2] (15针) &#x2F;dev&#x2F;usb&#x2F;lp[0-15] （USB）   鼠">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/07/18/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/1548376920557.png">
+<meta property="og:image" content="vscode-resource:/c:/Users/yezhihuo/Documents/note/home/yeah/study/studynote/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C/assets/%E6%89%A9%E5%B1%95%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.png">
+<meta property="article:published_time" content="2019-07-18T10:50:53.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.242Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/18/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/1548376920557.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/07/18/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>鸟哥的私房菜学习笔记 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/18/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          鸟哥的私房菜学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-18 18:50:53" itemprop="dateCreated datePublished" datetime="2019-07-18T18:50:53+08:00">2019-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C/" itemprop="url" rel="index"><span itemprop="name">鸟哥的私房菜</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="第二章-主机规划与磁盘分区"><a href="#第二章-主机规划与磁盘分区" class="headerlink" title="第二章 主机规划与磁盘分区"></a>第二章 主机规划与磁盘分区</h2><h3 id="各硬件在linux中的文件名"><a href="#各硬件在linux中的文件名" class="headerlink" title="各硬件在linux中的文件名"></a>各硬件在linux中的文件名</h3><table>
+<thead>
+<tr>
+<th align="left">设备</th>
+<th align="left">文件名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SCSI/SATA/USB硬盘机</td>
+<td align="left">/dev/sd[a-p]</td>
+</tr>
+<tr>
+<td align="left">USB闪存</td>
+<td align="left">/dev/sd[a-p]</td>
+</tr>
+<tr>
+<td align="left">virtl/IO界面</td>
+<td align="left">/dev/vd[0-7] (用于虚拟机内)</td>
+</tr>
+<tr>
+<td align="left">软盘机</td>
+<td align="left">/dev/fd[0-7]</td>
+</tr>
+<tr>
+<td align="left">打印机</td>
+<td align="left">/dev/lp[0-2] (15针) /dev/usb/lp[0-15] （USB）</td>
+</tr>
+<tr>
+<td align="left">鼠标</td>
+<td align="left">/dev/input/mouse[0-15] /dev/psaux /dev/mouse(当前鼠标)</td>
+</tr>
+<tr>
+<td align="left">CDROM/DVDROM</td>
+<td align="left">/dev/scd[0-1] /dev/sr[0-1] /dev/cdrom</td>
+</tr>
+<tr>
+<td align="left">磁带机</td>
+<td align="left">/dev/ht0 /dev/st0 /dev/tape</td>
+</tr>
+<tr>
+<td align="left">IDE硬盘机</td>
+<td align="left">/dev/hd[a-d]</td>
+</tr>
+</tbody></table>
+<h3 id="主分区和逻辑分区"><a href="#主分区和逻辑分区" class="headerlink" title="主分区和逻辑分区"></a>主分区和逻辑分区</h3><p>主分区： 分区信息记录在分区表内，分区表所存储的分区信息有限</p>
+<p>延伸分区：分区信息记录在分区表内，用于割分更多的分区，不可格式化</p>
+<p>逻辑分区：分区信息记录在延伸分区表内，割分延伸分区表</p>
+<p>GPT没有以上概念</p>
+<h3 id="开机流程"><a href="#开机流程" class="headerlink" title="开机流程"></a>开机流程</h3><ol>
+<li>BIOS：开机主动执行的固件，会认识第一个可开机的设备；</li>
+<li>MBR：第一个可开机设备的第一个扇区内的主要开机记录区块，内含开机管理程序；</li>
+<li>开机管理程序（boot loader）：一支可读取核心文件来执行的软件；</li>
+<li>核心文件：开始操作系统的功能…</li>
+</ol>
+<p><img src="assets/1548376920557.png" alt="uefi与BIOS对比"></p>
+<h3 id="目录树结构"><a href="#目录树结构" class="headerlink" title="目录树结构"></a>目录树结构</h3><blockquote>
+<p>目录树架构（directory tree）就是以根目录（/）为主，然后向下呈现分支状的目录结构的一种文件架构。</p>
+</blockquote>
+<ul>
+<li><strong>挂载</strong></li>
+</ul>
+<p>利用一个目录当成进入点（挂载点），将磁盘分区的数据放置在该目录下； 也就是说，进入该目录就可以读取该分 区</p>
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><ul>
+<li><strong>指令格式</strong></li>
+</ul>
+<blockquote>
+<p>$ :一般用户 #： root用户</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">指令</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">date</td>
+<td align="left">显示时间</td>
+</tr>
+<tr>
+<td align="left">cal</td>
+<td align="left">显示日历</td>
+</tr>
+<tr>
+<td align="left">bc</td>
+<td align="left">计算器</td>
+</tr>
+<tr>
+<td align="left">ctrl+c</td>
+<td align="left">终止指令</td>
+</tr>
+<tr>
+<td align="left">ctrl+d</td>
+<td align="left">键盘输入结束EOF、可取代exit</td>
+</tr>
+<tr>
+<td align="left">shift+pgdn（pgup）</td>
+<td align="left">翻页</td>
+</tr>
+<tr>
+<td align="left">sync</td>
+<td align="left">将数据同步写入硬盘</td>
+</tr>
+<tr>
+<td align="left">shutdown</td>
+<td align="left">关机</td>
+</tr>
+<tr>
+<td align="left">reboot</td>
+<td align="left">重启</td>
+</tr>
+<tr>
+<td align="left">chgrp</td>
+<td align="left">改变档案群组</td>
+</tr>
+<tr>
+<td align="left">chown</td>
+<td align="left">改变档案拥有者</td>
+</tr>
+<tr>
+<td align="left">chmod</td>
+<td align="left">改变档案权限</td>
+</tr>
+<tr>
+<td align="left">cat</td>
+<td align="left">读取文件内容</td>
+</tr>
+<tr>
+<td align="left">read</td>
+<td align="left">读取键盘输入</td>
+</tr>
+<tr>
+<td align="left">declare或typeset</td>
+<td align="left">声明变量名</td>
+</tr>
+</tbody></table>
+<p>[Tab] 接在一串指令的第一个字的后面,则为 “ 命令补全 ” ; [Tab] 接在一串指令的第二个字以后时,则为 “ 文件补齐 ” !</p>
+<h4 id="man"><a href="#man" class="headerlink" title="man"></a>man</h4><p>（man man） |编号 |代表内容| |1| 使用者在 shell 环境中可以操作的指令或可可执行文件| |2 |系统核心可调用的函数与工具等| |3| 一些常用的函数( function )与函数库( library ),大部分为 C 的函数库( libc )| |4| 设备文件的说明,通常在 /dev 下的文件| |5| 配置文件或者是某些文件的格式| |6| 游戏( games )| |7| 惯例与协定等,例如 Linux 文件系统、网络协定、 ASCII code 等等的说明| |8| 系统管理员可用的管理指令| |9| 跟 kernel 有关的文件|</p>
+<h4 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h4><p>可以通过man或info指令获取指令的详细信息</p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><h4 id="文件属性"><a href="#文件属性" class="headerlink" title="文件属性"></a>文件属性</h4><ul>
+<li>第一个字符<ul>
+<li>d 目录</li>
+<li><ul>
+<li>档案</li>
+</ul>
+</li>
+<li>l 连结档</li>
+<li>b 装置文件里的可供存储的接口设备</li>
+<li>c 装置文件里的串行端口设备</li>
+</ul>
+</li>
+<li>三个一组，分别为rwx，分别代表读、写、可执行。第一组为拥有者、第二组为同组群、第三为其他</li>
+</ul>
+<h4 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h4><ul>
+<li>正规文件【-】<ol>
+<li>纯文本文件</li>
+<li>二进制文件</li>
+<li>数据份格式文件</li>
+</ol>
+</li>
+<li>目录【d】</li>
+<li>链接文件【l】</li>
+<li>设备与设备文件<ol>
+<li>区块设备文件【b】：存储数据的周边设备，硬盘等 . 字符设备文件【c】：一次性读取设备，鼠标、键盘等</li>
+</ol>
+</li>
+<li>数据接口文件【s】</li>
+<li>输出传输档【p】</li>
+</ul>
+<h4 id="目录配置依据"><a href="#目录配置依据" class="headerlink" title="目录配置依据"></a>目录配置依据</h4><p>|不变的|/usr（软件放置处）/opt（第三方协议）|/etc（配置文件） /boot（开机与核心文档）| |可变的|/var/mail（使用者邮件信箱） /var/spool/news（新闻群组）|/var/run（程序相关） /var/lock（程序相关)|</p>
+<ul>
+<li>目录定义 / ( root, 根目录):与开机系统有关; /usr ( unix software resource ):与软件安装 / 执行有关; /var ( variable ):与系统运行过程有关。</li>
+</ul>
+<h4 id="笔记-1"><a href="#笔记-1" class="headerlink" title="笔记"></a>笔记</h4><ul>
+<li>-x权限对目录十分重要，拥有x权限才可以将该目录设为工作目录，才能执行其他指令</li>
+<li>-r权限可以读取到目录内的文件列表，但不能进入目录</li>
+<li>-w权限可以修改目录内的文件，但不能修改文件内容，使用时需要拥有x权限 -linux文件是否可以执行与文件扩展名无关，其通过文件属性设置</li>
+<li>文件以<code>.</code>开头表示隐藏文件</li>
+<li>Linux 的每个文件中,可分别给予使用者、群组与其他人三种身份个别的 rwx 权限;</li>
+<li>群组最有用的功能之一,就是当你在团队开发资源的时候,且每个帐号都可以有多个群组的支持;</li>
+<li>利用 ls -l 显示的文件属性中,第一个字段是文件的权限,共有十个位,第一个位是文件类型, 接下来三个为一组共三组,为使用者、群组、其他人的权限,权限有 r,w,x 三种;</li>
+<li>如果文件名之前多一个 “ . ” ,则代表这个文件为 “ 隐藏文件 ” ;</li>
+<li>若需要 root 的权限时,可以使用 su - 这个指令来切换身份。处理完毕则使用 exit 离开 su 的指令环境。</li>
+<li>更改文件的群组支持可用 chgrp ,修改文件的拥有者可用 chown ,修改文件的权限可用 chmod</li>
+<li>chmod 修改权限的方法有两种,分别是符号法与数字法,数字法中 r,w,x 分数为 4,2,1 ; 对文件来讲,权限的性能为: r :可读取此一文件的实际内容,如读取文本文件的文字内容等; w :可以编辑、新增或者是修改该文件的内容(但不含删除该文件); x :该文件具有可以被系统执行的权限。</li>
+<li>对目录来说,权限的性能为: r ( read contents in directory ) w ( modify contents of directory ) x ( access directory )</li>
+<li>要开放目录给任何人浏览时,应该至少也要给予 r 及 x 的权限,但 w 权限不可随便给;</li>
+<li>能否读取到某个文件内容,跟该文件所在的目录权限也有关系 (目录至少需要有 x 的权限)。</li>
+<li>Linux 文件名的限制为:单一文件或目录的最大容许文件名为 255 个英文字符或 128 个中文字符;</li>
+<li>根据 FHS 的官方文件指出, 他们的主要目的是希望让使用者可以了解到已安装软件通常放置于那个目录下</li>
+<li>FHS 订定出来的四种目录特色为: shareable, unshareable, static, variable 等四类;</li>
+<li>FHS 所定义的三层主目录为: /, /var, /usr 三层而已;</li>
+<li>绝对路径文件名为从根目录 / 开始写起,否则都是相对路径的文件名。</li>
+</ul>
+<h3 id="文件与目录管理"><a href="#文件与目录管理" class="headerlink" title="文件与目录管理"></a>文件与目录管理</h3><p>|. |代表此层目录| |..|代表上一层目录| |-|代表前一个工作目录| |<del>|代表 “ 目前使用者身份 ” 所在的主文件夹| |</del>account|代表 account 这个使用者的主文件夹( account 是个帐号名称)|</p>
+<ul>
+<li>常见目录指令 |cd|变更目录| |pwd|显示目前的目录| |mkdir|创建新目录| |rmdir|删除空目录|</li>
+</ul>
+<h3 id="vi和vim"><a href="#vi和vim" class="headerlink" title="vi和vim"></a>vi和vim</h3><h2 id="第十章-BASH"><a href="#第十章-BASH" class="headerlink" title="第十章 BASH"></a>第十章 BASH</h2><h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><h4 id="变量使用与设置"><a href="#变量使用与设置" class="headerlink" title="变量使用与设置"></a>变量使用与设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myname&#x3D;yezh</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>等号两边不能有空格</li>
+<li>使用单反引号[<code>command</code>]或$(command)可以执行额外的命令</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">version&#x3D;$(uname -r)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>双引号内的特殊字符如<code>$</code>保持原有特性</li>
+<li>单引号内特殊字符与一般字符相同 可使用<code>\</code>将特殊字符转化为一般字符</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">myhome=<span class="string">"<span class="variable">$HOME</span>"</span></span><br><span class="line"><span class="comment">#myhome = /home/yeah</span></span><br><span class="line"></span><br><span class="line">myroom=<span class="string">'$HOME'</span></span><br><span class="line"><span class="comment">#myroom=$HOME</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用<code>${name}</code>or<code>$&quot;name&quot;</code>可扩展变量内容</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">myroom=<span class="variable">$HOME</span>  <span class="comment">#myhome = /home/yeah</span></span><br><span class="line">myroom=<span class="variable">$&#123;myhome&#125;</span>:/home/bin</span><br><span class="line"><span class="comment">#myhome = /home/yeah:/home/bin</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>using variable on other program with <code>export variablename</code></li>
+<li>canncel variable with <code>unset variablename</code></li>
+<li>父进程定义的变量无法在子进程中使用</li>
+</ul>
+<h4 id="环境变量功能"><a href="#环境变量功能" class="headerlink" title="环境变量功能"></a>环境变量功能</h4><blockquote>
+<p><strong>子进程只继承父进程的环境变量，不继承自定义变量</strong></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看环境变量</span></span><br><span class="line">env</span><br><span class="line"><span class="built_in">export</span></span><br><span class="line"><span class="comment">#查看所有变量（含环境变量和自定义变量）</span></span><br><span class="line"><span class="built_in">set</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="变量内容的删除、替换"><a href="#变量内容的删除、替换" class="headerlink" title="变量内容的删除、替换"></a>变量内容的删除、替换</h4><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>#</code></td>
+<td align="left">符合删除文字的最短字符串</td>
+</tr>
+<tr>
+<td align="left"><code>##</code></td>
+<td align="left">符合删除文字的最长字符串</td>
+</tr>
+<tr>
+<td align="left"><code>%</code></td>
+<td align="left">从后往前删除</td>
+</tr>
+<tr>
+<td align="left"><code>%%</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>/old/new</code></td>
+<td align="left">替换第一个相符关键字</td>
+</tr>
+<tr>
+<td align="left"><code>//old/new</code></td>
+<td align="left">替换全部相符关键字</td>
+</tr>
+</tbody></table>
+<h2 id="第十一章-正则表达式"><a href="#第十一章-正则表达式" class="headerlink" title="第十一章 正则表达式"></a>第十一章 正则表达式</h2><table>
+<thead>
+<tr>
+<th align="left">特殊符号</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>[:alnum:]</strong></td>
+<td align="left">大小写字母与数组，即0<del>9. a</del>z, A~Z</td>
+</tr>
+<tr>
+<td align="left"><strong>[:alpha:]</strong></td>
+<td align="left">大小写字母，a<del>z, A</del>Z</td>
+</tr>
+<tr>
+<td align="left">[:blank:]</td>
+<td align="left">空格键与[tab]键</td>
+</tr>
+<tr>
+<td align="left">[:cntrl:]</td>
+<td align="left">控制按键，CR、LF、Tab、Del等</td>
+</tr>
+<tr>
+<td align="left"><strong>[:digit:]</strong></td>
+<td align="left">数字，0~9</td>
+</tr>
+<tr>
+<td align="left">[:graph:]</td>
+<td align="left">除空格键和[tab]以外所有按键</td>
+</tr>
+<tr>
+<td align="left"><strong>[:lower:]</strong></td>
+<td align="left">小写字母a~z</td>
+</tr>
+<tr>
+<td align="left">[:print:]</td>
+<td align="left">可打印字符</td>
+</tr>
+<tr>
+<td align="left">[:punct:]</td>
+<td align="left">标点符号，“ ? . /等</td>
+</tr>
+<tr>
+<td align="left"><strong>[:upper:]</strong></td>
+<td align="left">大写字母A~Z</td>
+</tr>
+<tr>
+<td align="left">[:space:]</td>
+<td align="left">任何会产生空白的字符，空格，TAB, CR等</td>
+</tr>
+<tr>
+<td align="left">[:xdigit:]</td>
+<td align="left">十六进制数字类型，包括0~ 9，a<del>f， A</del>F</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">RE 字符</th>
+<th align="left">意义与范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">^word</td>
+<td align="left">意义:待搜寻的字串( word )在行首! 范例:搜寻行首为 # 开始的那一行,并列出行号 <code>grep -n &#39;^#&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left">word$</td>
+<td align="left">意义:待搜寻的字串( word )在行尾! 范例:将行尾为!的那一行打印出来,并列出行号 <code>grep -n &#39;!$&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left">.</td>
+<td align="left">意义:代表 “ 一定有一个任意字符 ” 的字符! 范例:搜寻的字串可以是 (eve)(eae)(eee)(ee),但不能仅有(ee)!亦即e与e中间“一定”仅有一个字符,而空白字符也是字符! <code>grep -n &#39;e.e&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left">\</td>
+<td align="left">意义:转义字符,将特殊符号的特殊意义去除! 范例:搜寻含有单引号 ‘ 的那一行! `grep -n ‘ regular_express.txt</td>
+</tr>
+<tr>
+<td align="left">*</td>
+<td align="left">意义:重复零个到无穷多个的前一个 RE 字符 范例:找出含有 ( es ) ( ess ) ( esss ) 等等的字串,注意,因为 * 可以是 0 个,所以 es 也是符合带搜寻字串。另外,因为 * 为重复 “ 前一个 RE 字符 ” 的符号, 因此,在 * 之前必须要紧接着一个 RE 字符喔!例如任意字符则为“.<em>”! `grep -n ‘ess</em>‘ regular_express.txt`</td>
+</tr>
+<tr>
+<td align="left">[list]</td>
+<td align="left">意义:字符集合的 RE 字符,里面列出想要撷取的字符! 范例:搜寻含有 ( gl ) 或 ( gd ) 的那一行,需要特别留意的是,在 [] 当中 “ 谨代表一个待搜寻的字符 ” , 例如 “a[afl]y ” 代表搜寻的字串可以是 aay, afy, aly 即 [afl] 代表 a 或 f 或 l 的意思! <code>grep -n &#39;g[ld]&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left">[n1-n2]</td>
+<td align="left">意义:字符集合的 RE 字符,里面列出想要撷取的字符范围! 范例:搜寻含有任意数字的那一行!需特别留意,在字符集合 [] 中的减号 - 是有特殊意义的,他代表两个字符之间的所有连续字符!但这个连续与否与 ASCII 编码有关,因此,你的编码需要设置正确(在 bash 当中,需要确定 LANG 与 LANGUAGE 的变量是否正确!) 例如所有大写字符则为 [A-Z] <code>grep -n &#39;[A-Z]&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left"><code>[^list]</code></td>
+<td align="left">意义:字符集合的 RE 字符,里面列出不要的字串或范围! 范例:搜寻的字串可以是 ( oog ) ( ood ) 但不能是 ( oot ) ,那个 ^ 在 [] 内时,代表的意义是 “ 反向选择 ” 的意思。 例如,我不要大写字符,则为 [^A-Z] 。但是,需要特别注意的是,如果以 grep -n [^A-Z] regular_express.txt 来搜寻,却发现该文件内的所有行都被列出,为什么?因为这个 [^A-Z] 是 “ 非大写字符 ” 的意思, 因为每一行均有非大写字符,例如第一行的”Open Source” 就有 p,e,n,o…. 等等的小写字<code>grep -n &#39;oo[^t]&#39; regular_express.txt</code></td>
+</tr>
+<tr>
+<td align="left">{n,m}</td>
+<td align="left">意义:连续 n 到 m 个的 “ 前一个 RE 字符 ” 意义:若为 {n} 则是连续 n 个的前一个 RE 字符, 意义:若是 {n,} 则是连续 n 个以上的前一个 RE 字符!  范例:在 g 与 g 之间有 2 个到 3 个的 o 存在的字串,亦即 ( goog )( gooog ) <code>grep -n &#39;go\{2,3\}g&#39; regular_express.txt</code></td>
+</tr>
+</tbody></table>
+<p><img src="vscode-resource:/c:/Users/yezhihuo/Documents/note/home/yeah/study/studynote/%E9%B8%9F%E5%93%A5%E7%9A%84%E7%A7%81%E6%88%BF%E8%8F%9C/assets/%E6%89%A9%E5%B1%95%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F.png" alt="re"></p>
+<h2 id="第十二章-shell脚本"><a href="#第十二章-shell脚本" class="headerlink" title="第十二章 shell脚本"></a>第十二章 shell脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#program</span></span><br><span class="line"><span class="comment">#  creat one file named by user's input and date command</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">"please input file name: "</span> fileuser</span><br><span class="line">filename=<span class="variable">$&#123;fileuser:-"backup"&#125;</span></span><br><span class="line">datestr=$(date +%y%m%d)</span><br><span class="line">filename=<span class="variable">$&#123;filename&#125;</span>-<span class="variable">$&#123;datestr&#125;</span></span><br><span class="line">touch <span class="string">"<span class="variable">$&#123;filename&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>对变量赋值时，等号两边不能有空格</strong></p>
+<h3 id="执行方式"><a href="#执行方式" class="headerlink" title="执行方式"></a>执行方式</h3><ol>
+<li><p>source<br>直接在父进程中运行脚本</p>
+</li>
+<li><p>sh script<br>在子进程中运行脚本</p>
+</li>
+<li><p>./script 需要将文件设置为可执行文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x &lt;filename&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="命令行参数"><a href="#命令行参数" class="headerlink" title="命令行参数"></a>命令行参数</h3><p>bash命令行参数可以用<code>$0</code>,<code>$1</code>…获取</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#program:test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"the program name is: <span class="variable">$0</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"the frist arg is: <span class="variable">$1</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"the second arg is: <span class="variable">$2</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># bash</span></span><br><span class="line">$ sh <span class="built_in">test</span> 1 2 3</span><br><span class="line">the program name is: <span class="built_in">test</span></span><br><span class="line">the frist arg is: 1</span><br><span class="line">the second arg is: 2</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="判断式"><a href="#判断式" class="headerlink" title="判断式"></a>判断式</h3><h4 id="test命令"><a href="#test命令" class="headerlink" title="test命令"></a><code>test</code>命令</h4><h4 id="判断符号"><a href="#判断符号" class="headerlink" title="[ ]判断符号"></a><code>[ ]</code>判断符号</h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="prev" title="操作系统">
+      <i class="fa fa-chevron-left"></i> 操作系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/18/%E7%BA%BF%E7%A8%8B/" rel="next" title="线程">
+      线程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础篇"><span class="nav-number">1.</span> <span class="nav-text">基础篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-主机规划与磁盘分区"><span class="nav-number">1.1.</span> <span class="nav-text">第二章 主机规划与磁盘分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#各硬件在linux中的文件名"><span class="nav-number">1.1.1.</span> <span class="nav-text">各硬件在linux中的文件名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主分区和逻辑分区"><span class="nav-number">1.1.2.</span> <span class="nav-text">主分区和逻辑分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开机流程"><span class="nav-number">1.1.3.</span> <span class="nav-text">开机流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录树结构"><span class="nav-number">1.1.4.</span> <span class="nav-text">目录树结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作"><span class="nav-number">1.1.5.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#man"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">man</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#笔记"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">笔记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件"><span class="nav-number">1.1.6.</span> <span class="nav-text">文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件属性"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">文件属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件类型"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#目录配置依据"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">目录配置依据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#笔记-1"><span class="nav-number">1.1.6.4.</span> <span class="nav-text">笔记</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件与目录管理"><span class="nav-number">1.1.7.</span> <span class="nav-text">文件与目录管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vi和vim"><span class="nav-number">1.1.8.</span> <span class="nav-text">vi和vim</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十章-BASH"><span class="nav-number">1.2.</span> <span class="nav-text">第十章 BASH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量"><span class="nav-number">1.2.1.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量使用与设置"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">变量使用与设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#环境变量功能"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">环境变量功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量内容的删除、替换"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">变量内容的删除、替换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十一章-正则表达式"><span class="nav-number">1.3.</span> <span class="nav-text">第十一章 正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十二章-shell脚本"><span class="nav-number">1.4.</span> <span class="nav-text">第十二章 shell脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#执行方式"><span class="nav-number">1.4.1.</span> <span class="nav-text">执行方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行参数"><span class="nav-number">1.4.2.</span> <span class="nav-text">命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断式"><span class="nav-number">1.4.3.</span> <span class="nav-text">判断式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#test命令"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">test命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判断符号"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">[ ]判断符号</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

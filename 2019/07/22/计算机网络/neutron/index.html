@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="neutron的作用是实现虚拟机之间的网络通信及其管理功能，其中，虚拟机可是位于多台服务器，也可以在一台服务器上，虚拟机之间可以划分LAN，同一LAN下的虚拟机可以相互通信，不同LAN的虚拟机之间是不可见的，同一LAN的虚拟机可以位于不同的服务器。Neutron 实现了基于物理 VLAN 交换机的跨物理服务器二层虚拟网络。在同一服务器下的相同LAN虚拟机通过虚拟网桥或交换机进行通信，不同服务器之间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="neutron">
+<meta property="og:url" content="http://yoursite.com/2019/07/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/neutron/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="neutron的作用是实现虚拟机之间的网络通信及其管理功能，其中，虚拟机可是位于多台服务器，也可以在一台服务器上，虚拟机之间可以划分LAN，同一LAN下的虚拟机可以相互通信，不同LAN的虚拟机之间是不可见的，同一LAN的虚拟机可以位于不同的服务器。Neutron 实现了基于物理 VLAN 交换机的跨物理服务器二层虚拟网络。在同一服务器下的相同LAN虚拟机通过虚拟网桥或交换机进行通信，不同服务器之间">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-22T01:35:04.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.237Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="openvSwitch">
+<meta property="article:tag" content="Neutron">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/07/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/neutron/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>neutron | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/neutron/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          neutron
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-22 09:35:04" itemprop="dateCreated datePublished" datetime="2019-07-22T09:35:04+08:00">2019-07-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/openSwitch/" itemprop="url" rel="index"><span itemprop="name">openSwitch</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>neutron的作用是实现虚拟机之间的网络通信及其管理功能，其中，虚拟机可是位于多台服务器，也可以在一台服务器上，虚拟机之间可以划分LAN，同一LAN下的虚拟机可以相互通信，不同LAN的虚拟机之间是不可见的，同一LAN的虚拟机可以位于不同的服务器。Neutron 实现了基于物理 VLAN 交换机的跨物理服务器二层虚拟网络。在同一服务器下的相同LAN虚拟机通过虚拟网桥或交换机进行通信，不同服务器之间的虚拟机通过物理交换机通信。  </p>
+<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p>NAT(Network Address Transorm)网络地址转换协议，用于内网和外网之间的地址转换。</p>
+<p>SNAT(Source Network Address Transform)源网络地址转化。当内部地址需要访问外部服务时，内部地址会主动发起链接，由路由器或者网关对内部地址做源地址转化</p>
+<p>DNAT(Destination Network Address Transform)目的地址转化。当外部网络需要访问内部服务时，由路由器或者网关接受外部链接，然后将外部链接转化为内部链接</p>
+<h2 id="网络拓扑结构"><a href="#网络拓扑结构" class="headerlink" title="网络拓扑结构"></a>网络拓扑结构</h2><p>在典型的网络生产环境中，一般将网络分为一下4种：</p>
+<ol>
+<li>公共网络，即外网网络</li>
+<li>管理网络，即OpenStack自身组件使用的网络</li>
+<li>服务网络，即虚拟机所使用的内网网络</li>
+<li>存储网络，存储专用网络，一般和管理网络同网段。</li>
+</ol>
+<p>Neutron支持一下5种网络拓扑结构</p>
+<ol>
+<li>单一平面网络是指所有租户共享一个相同的服务网络和公共网络，意味着一个租户下的虚拟机能够访问其他租户下的虚拟机，隔离性不好。</li>
+<li>多平面网络也是服务网络和公共网络相同，但是可以有多个共享网络，当两个虚拟机需要通信时，虚拟机内部可以通过多网卡同时共享一个网段，这些共享网段对所有租户共享。</li>
+<li>混合平面私有网络是指每个租户拥有自己的服务网络同时共享相同的公共网络。</li>
+<li>通过私有网络实现运营商路由功能，是指每个租户拥有自己的服务网络，并且虚拟机可以直接通过提供商路由所提供的SNAT功能访问外部网络命名空间</li>
+<li>通过私有网络实现每个租户创建自己专属的网络专区，支持命名空间，每个网络可以选择拥有自己独立的提供商路由——一般来说是虚拟路由</li>
+</ol>
+<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p>VLAN 表示 Virutal LAN。一个带有 VLAN 功能的switch 能够同时处于多个 LAN 中。最简单地说，VLAN 是一种将一个交换机分成多个交换机的一种方法。比方说，你有两组机器，group A 和 B，你想配置成组 A 中的机器可以相互访问，B 中的机器也可以相互访问，但是A组中的机器不能访问B组中的机器。你可以使用两个交换机，两个组分别接到一个交换机。如果你只有一个交换机，你可以使用 VLAN 达到同样的效果。你在交换机上分配配置连接组A和B的机器的端口为 VLAN access ports。这个交换机就会只在同一个 VLAN 的端口之间转发包。</p>
+<p> 以太网端口有三种链路类型：Access、Hybrid和Trunk。</p>
+<ul>
+<li>Access类型的端口只能属于1个VLAN，一般用于连接计算机的端口。这种类型的端口允许接收没有打标签的帧，再发出去时将会被打上标签。</li>
+<li>Trunk类型的端口可以属于多个VLAN，可以接收和发送多个VLAN的报文，一般用于交换机之间连接的端口</li>
+<li>Hybrid类型的端口可以属于多个VLAN，可以接收和发送多个VLAN的报文，可以用于交换机之间连接，也可以用于连接用户的计算机。Hybrid端口和Trunk端口的不同之处在于Hybrid端口可以允许多个VLAN的报文发送时不打标签，而Trunk端口只允许缺省VLAN的报文发送时不打标签。</li>
+</ul>
+<p>标签是为了方便交换机识别传输的数据属于哪个LAN，对于计算机来说，其只接受其所在的LAN的数据帧，而筛选帧的过程是由交换机完成的。由于帧所属LAN的判断是由交换机完成而非计算机，因此，用于与计算机相连的Acess中的帧不含标签，而用于交换机与交换机之间的Trunk必须包含的标签。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><table>
+<thead>
+<tr>
+<th>valn</th>
+<th>虚拟lan,同一个物理lan下用标签实现隔离</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>vxlan</td>
+<td>一套利用UDP协议作为底层传输协议的Overlay实现。一般认为作为VLan技术的延申或替代者。</td>
+</tr>
+<tr>
+<td>gre</td>
+<td>一种通过封装来实现隧道的方式。在openstack中一般是基于L3的gre</td>
+</tr>
+<tr>
+<td>TAP设备</td>
+<td>比如vnet0，是虚拟化技术如KVM和Xen用来实现虚拟网卡的。当一个以太网帧发送给TAP设备时，该帧会被虚拟机操作系统所接收。</td>
+</tr>
+<tr>
+<td>VETH pair</td>
+<td>veth配对设备或OVS配对端口（patch port），是一对一直相连的虚拟网络接口。在虚拟网络技术中，经常使用veth pair作为虚拟配对线缆来连接两个虚拟网桥</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+              <a href="/tags/openvSwitch/" rel="tag"># openvSwitch</a>
+              <a href="/tags/Neutron/" rel="tag"># Neutron</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/18/unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="prev" title="Unix网络编程卷1学习笔记">
+      <i class="fa fa-chevron-left"></i> Unix网络编程卷1学习笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/28/nat/" rel="next" title="网络地址转换（NAT）">
+      网络地址转换（NAT） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NAT"><span class="nav-number">1.</span> <span class="nav-text">NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络拓扑结构"><span class="nav-number">2.</span> <span class="nav-text">网络拓扑结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN"><span class="nav-number">3.</span> <span class="nav-text">VLAN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">4.</span> <span class="nav-text">概念</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

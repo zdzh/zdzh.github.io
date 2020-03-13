@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="计算机网络学习笔记网络局域网和广域网的区别广域网（wide area network，WAN）也是由具有通信能力的设备相互连接而形成的。可是，局域网和广域网有一些不同。局域网通常覆盖范围受限，可以覆盖一间办公室、一栋大楼或一个校园；广域网则具有更广的地理覆盖范围，可以覆盖一个城市、一个省、一个国家甚至整个世界。局域网互联主机；广域网互联交换机、路由器、调制解调器等连接设备。局域网通常由使用它的组织">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络">
+<meta property="og:url" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="计算机网络学习笔记网络局域网和广域网的区别广域网（wide area network，WAN）也是由具有通信能力的设备相互连接而形成的。可是，局域网和广域网有一些不同。局域网通常覆盖范围受限，可以覆盖一间办公室、一栋大楼或一个校园；广域网则具有更广的地理覆盖范围，可以覆盖一个城市、一个省、一个国家甚至整个世界。局域网互联主机；广域网互联交换机、路由器、调制解调器等连接设备。局域网通常由使用它的组织">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/assets/1563355028570.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563416125171.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563417379179.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/assets/1563354050330.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/assets/1563354812934.png">
+<meta property="article:published_time" content="2019-07-17T08:40:59.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.242Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/assets/1563355028570.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>计算机网络 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机网络
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-17 16:40:59" itemprop="dateCreated datePublished" datetime="2019-07-17T16:40:59+08:00">2019-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="计算机网络学习笔记"><a href="#计算机网络学习笔记" class="headerlink" title="计算机网络学习笔记"></a>计算机网络学习笔记</h1><h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><h3 id="局域网和广域网的区别"><a href="#局域网和广域网的区别" class="headerlink" title="局域网和广域网的区别"></a>局域网和广域网的区别</h3><p>广域网（wide area network，WAN）也是由具有通信能力的设备相互连接而形成的。可是，局域网和广域网有一些不同。局域网通常覆盖范围受限，可以覆盖一间办公室、一栋大楼或一个校园；广域网则具有更广的地理覆盖范围，可以覆盖一个城市、一个省、一个国家甚至整个世界。局域网互联主机；广域网互联交换机、路由器、调制解调器等连接设备。局域网通常由使用它的组织拥有；广域网通常由通信公司建设和运营，使用它的组织进行租用。我们看看目前使用的两种典型的广域网：点到点广域网和交换式广域网。     </p>
+<h3 id="网络层次结构"><a href="#网络层次结构" class="headerlink" title="网络层次结构"></a>网络层次结构</h3><p><img src="assets/1563355028570.png" alt="1563355028570"></p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>俩个应用层之间的逻辑连接是<strong>端到端</strong>的，其通信处于两个进程之间。应用层交换的数据成为消息（message）</p>
+<p>其常见的协议有http，ssh，smtp，ftp等</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>两个传输层的逻辑连接也是端到端的。其常见协议有tcp，udp，sctp。TCP中的数据称为段（segment），UDP中的数据称为用户报文（user datagram)</p>
+<p>TCP是面向连接的协议，，其提供流量控制、差错控制、拥塞控制</p>
+<p>UDP是无连接协议，其尽最大努力交付数据，但不保证对端一定接收到完整数据。    </p>
+<h3 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h3><p>TCP的可靠数据传输形式如下所示，发送端按序发送数据分组，接收方接受到一个数据分组后发送一个ACK确认，接受方收到ACK后才开始发送下一个数据分组。</p>
+<p><img src="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563416125171.png" alt="1563416125171"></p>
+<p>发送方在规定时间内未收到ACK时，会重发当前数据分组。在此过程中数据分组和ACK均可能在传输过程中丢失，丢失数据分组会导致接收方无法收到数据分组而不发送ACK，丢失ACK会导致发送方无法收到ACK，两者中的任意一者丢失都会导致发送方无法接收到ACK。此外，由于网络影响，ACK可能会延时到达，甚至在发送端超时重发后到达，对于延时到达的重复的数据分组和ACK，发送方和接收方均不在做出反应。</p>
+<p>接收方会对接收到的数据分组进行差错检验，若检验出错，接收方不发送ACK，等待发送方超时重传。</p>
+<p>上述形式会导致发送方和接收方花费大量时间等待对方应答，对带宽利用率低，因此，实际使用时采用流水线的方式对数据进行传输。</p>
+<p><img src="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563417379179.png" alt="1563417379179"></p>
+<p>在上图中，发送方一次发送多个数据分组，接受方同时接收多个数据分组并针对每个数据分组发送ACK，当发送方收到所有ACK后，开始发送下一批数据分组。为了解决丢包问题，流水线采用回退N步和选择重传的方式。</p>
+<p>回退N步：接收方按序接收数据分组，若接收到一个失序分组（即此分组前存在未接收到的分组）则丢弃分组，同时接收方只为按序分组发送ACK，若发送方收到某分组的ACK而未收到下一个分组的ACK，则认为此数据分组之前的数据全部传输成功，此分组之后的数据全部丢失，发送方开始重传之后的数据。</p>
+<p>选择重传：接收方能够接收失序数据分组，且为每个数据分组发送ACK，接收方只重传为收到ACK的数据分组而不重传其之后的数据分组。</p>
+<h3 id="拥塞控制和流量控制"><a href="#拥塞控制和流量控制" class="headerlink" title="拥塞控制和流量控制"></a>拥塞控制和流量控制</h3><p>流量控制是针对接收方的接收能力的，当接收方无法及时处理发送方发送的大量数据从而导致数据丢失时，发送方会根据流量控制减少数据发送量。流量控制主要靠接收窗口实现，接收方通过接收窗口告知发送方接收能力。</p>
+<p>拥塞控制是针对网络传输能力的，当网络繁忙时，发送的数据可能出现大量的丢包或延时，这时发送方会控制数据发送量以减轻网络负担。TCP采用拥塞窗口来解决拥塞问题，拥塞窗口会限制 数据发送速率。TCP采用的拥塞控制算法包括慢启动，拥塞避免，快恢复</p>
+<p>慢启动，传输开始时，发送方会以大小为1的拥塞窗口开始，并以指数级增加拥塞窗口大小，直至发现网络拥塞达到某一程度时，结束指数增长，转为拥塞避免。</p>
+<p>拥塞避免：以较平缓的方法增加拥塞窗口，当丢包率达到某种程度时，将拥塞窗口减半，并启动快恢复</p>
+<p>快恢复：拥塞窗口不再从1开始，但执行与慢启动和拥塞避免中相同的操作</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>网络层的通信时主机到主机的。其主要的协议时IP协议，IP协议是无连接协议，不提供流量控制和差错控制。网络中的数据称为数据报（datagram）</p>
+<p>网络层还包括ICMP、IGMP、DHCP、ARP等辅助协议帮助完成 IP转发和路由工作。</p>
+<h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>数据链路层中的数据单元称为帧。</p>
+<h2 id="交换机、网桥与路由器"><a href="#交换机、网桥与路由器" class="headerlink" title="交换机、网桥与路由器"></a>交换机、网桥与路由器</h2><p><strong>网桥（Bridge)</strong>也称为桥接器，是连接两个局域网的存储转发设备，用它可以使完全具有相同或相似体系结构网络系统的连接，这样不但能扩展网络的距离或范围，而且可提高网络的性能、可靠性和安全性。网桥工作在OSI参考模型的数据链路层（第二层），将两个LAN连起来，根据MAC地址来转发帧，可以看作一个“低层的路由器”（路由器工作在网络层，根据网络地址如IP地址进行转发）。</p>
+<p><strong>交换机</strong>位于链路层，其自身对子网中的主机和路由器时透明的，交换机实质是一个多接口的网桥。交换机具有并行性，能够同时连通多对接口，使多台主机同时通信且彼此之间独占传输媒体，无碰撞发生，而网桥只能一次分析和转发一个帧。</p>
+<p>在数据传输过程中，交换机在数据链路层上对数据进行转发，通过识别目标主体的MAC地址决定将数据传输到哪个链路上 ；路由器在网络层对数据进行转发，也就是说路由器在转发过程中会识别传输数据的IP地址，并在链路层将IP地址转化为MAC地址传递给一个数据接收主体。对于路由器和交换机来说，其最终都是通过mac来唯一区分一个主体的，但在路由器中，会将mac地址映射为在该局域网内唯一的ip地址，作为设备的标记。</p>
+<p><img src="assets/1563354050330.png" alt="1563354050330"></p>
+<p>上述过程中，交换机不会改变数据的内容，但路由器可能会修改网络层以下的的数据内容，比如将数据分组切片。路由器不能修改网络层以上的数据内容，也就是说，对于两台主机而言，无论中间经过多少路由器，其接收端从网络层获取的数据一定与发送端传输到网络层的数据一致。</p>
+<p><img src="assets/1563354812934.png" alt="1563354812934"></p>
+<h2 id="网络隧道"><a href="#网络隧道" class="headerlink" title="网络隧道"></a>网络隧道</h2><p>隧道协议（Tunneling Protocol）是一类网络协议，它是一种数据包封装技术，它是将原始IP包（其报头包含原始发送者和最终目的地）封装在另一个数据包（称为封装的IP包）的数据净荷中进行传输。使用隧道的原因是在不兼容的网络上传输数据，或在不安全网络上提供一个安全路径。隧道协议通常（但并非总是）在一个比负载协议还高的层级，或同一层。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/07/15/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%88GitHub-hexo%EF%BC%89/" rel="prev" title="创建博客（GitHub+hexo）">
+      <i class="fa fa-chevron-left"></i> 创建博客（GitHub+hexo）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/07/18/http/" rel="next" title="HTTP/HTTPS协议">
+      HTTP/HTTPS协议 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#计算机网络学习笔记"><span class="nav-number">1.</span> <span class="nav-text">计算机网络学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">1.1.</span> <span class="nav-text">网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#局域网和广域网的区别"><span class="nav-number">1.1.1.</span> <span class="nav-text">局域网和广域网的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络层次结构"><span class="nav-number">1.1.2.</span> <span class="nav-text">网络层次结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用层"><span class="nav-number">1.2.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传输层"><span class="nav-number">1.3.</span> <span class="nav-text">传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可靠传输"><span class="nav-number">1.3.1.</span> <span class="nav-text">可靠传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拥塞控制和流量控制"><span class="nav-number">1.3.2.</span> <span class="nav-text">拥塞控制和流量控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络层"><span class="nav-number">1.4.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据链路层"><span class="nav-number">1.5.</span> <span class="nav-text">数据链路层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交换机、网桥与路由器"><span class="nav-number">1.6.</span> <span class="nav-text">交换机、网桥与路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络隧道"><span class="nav-number">1.7.</span> <span class="nav-text">网络隧道</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

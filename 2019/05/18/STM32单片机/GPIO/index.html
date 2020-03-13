@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="GPIOGPIO 是通用输入输出端口的简称，简单来说就是STM32 可控制的引脚，STM32 芯片的GPIO 引脚与外部设备连接起来，从而实现与外部通讯、控制以及数据采集的功能。        基本结构保护二极管及上、下拉电阻引脚的两保护个二级管可以防止引脚外部过高或过低的电压输入，当引脚电压高于VDD_FT时，上方的二极管导通，当引脚电压低于VSS时，下方的二极管导通，防止不正常电压引入芯片导致">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM引脚设置">
+<meta property="og:url" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/index.html">
+<meta property="og:site_name" content="yezh&#39;s blog">
+<meta property="og:description" content="GPIOGPIO 是通用输入输出端口的简称，简单来说就是STM32 可控制的引脚，STM32 芯片的GPIO 引脚与外部设备连接起来，从而实现与外部通讯、控制以及数据采集的功能。        基本结构保护二极管及上、下拉电阻引脚的两保护个二级管可以防止引脚外部过高或过低的电压输入，当引脚电压高于VDD_FT时，上方的二极管导通，当引脚电压低于VSS时，下方的二极管导通，防止不正常电压引入芯片导致">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/assets/1563449222965.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/assets/1563449264821.png">
+<meta property="article:published_time" content="2019-05-18T11:26:13.000Z">
+<meta property="article:modified_time" content="2020-03-13T09:26:07.076Z">
+<meta property="article:author" content="yezh">
+<meta property="article:tag" content="stm32">
+<meta property="article:tag" content="GPIO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/assets/1563449222965.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>STM引脚设置 | yezh's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yezh's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">菜鸟当家</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section">首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/GPIO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STM引脚设置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="GPIO"><a href="#GPIO" class="headerlink" title="GPIO"></a>GPIO</h1><p>GPIO 是通用输入输出端口的简称，简单来说就是STM32 可控制的引脚，STM32 芯片的GPIO 引脚与外部设备连接起来，从而实现与外部通讯、控制以及数据采集的功能。    </p>
+<p><img src="assets/1563449222965.png" alt="GPIO结构框图">  </p>
+<h2 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h2><h3 id="保护二极管及上、下拉电阻"><a href="#保护二极管及上、下拉电阻" class="headerlink" title="保护二极管及上、下拉电阻"></a>保护二极管及上、下拉电阻</h3><p>引脚的两保护个二级管可以防止引脚外部过高或过低的电压输入，当引脚电压高于VDD_FT时，上方的二极管导通，当引脚电压低于VSS时，下方的二极管导通，防止不正常电压引入芯片导致芯片烧毁。<br>上拉、下拉电阻，从它的结构我们可以看出，通过上、下拉对应的开关配置，我们可以控制引脚默认状态的电压，开启上拉的时候引脚电压为高电平，开启下拉的时候引脚电压为低电平，这样可以消除引脚不定状态的影响。如引脚外部没有外接器件，或者外部的器件不干扰该引脚电压时，STM32的引脚都会有这个默认状态。<br><em>可以设置“既不上拉也不下拉模式”，称为浮空模式。 *<br>*</em>STM32 的内部上拉是“弱上拉”，即通过此上拉输出的电流是很弱的，如要求大电流还是需要外部上拉。**</p>
+<h3 id="P-MOS-管和N-MOS管"><a href="#P-MOS-管和N-MOS管" class="headerlink" title="P-MOS 管和N-MOS管"></a>P-MOS 管和N-MOS管</h3><p>GPIO 引脚线路经过上、下拉电阻结构后，向上流向“输入模式”结构，向下流向“输出模式”结构。先看输出模式部分，线路经过一个由P-MOS 和N-MOS 管组成的单元电路。这个结构使GPIO 具有了==“推挽输出”==和==“开漏输出”==两种模式。<img src="assets/1563449264821.png" alt="image"></p>
+<p>高电平时，上方的P-MOS 导通，下方的N-MOS关闭，对外输出高电平；而在该结构中输入低电平时，N-MOS管导通，P-MOS关闭，对外输出低电平。当引脚高低电平切换时，两个管子轮流导通，一个负责灌电流，一个负责拉电流，使其负载能力和开关速度都比普通的方式有很大的提高。<br>推挽输出的低电平为0 伏，高电平为3.3伏，它是推挽输出模式时的等效电路。而在开漏输出模式时，上方的P-MOS 管完全不工作。如果我们控制输出为0，低电平，则P-MOS 管关闭，N-MOS 管导通，使输出接地，若控制输出为1 (它无法直接输出高电平) 时，则P-MOS 管和N-MOS 管都关闭，所以引脚既不输出高电平，也不输出低电平，为高阻态。为正常使用时必须接上拉电阻(可用STM32 的内部上拉，但建议在STM32外部再接一个上拉电阻)，。它具“线与”特性，也就是说，若有很多个开漏模式引脚连接到一起时，只有当所有引脚都输出高阻态，才由上拉电阻提供高电平，此高电平的电压为外部上拉电阻所接的电源的电压。若其中一个引脚为低电平，那线路就相当于短路接地，使得整条线路都为低电平，0 伏。推挽输出模式一般应用在输出电平为0 和3.3 伏而且需要高速切换开关状态的场合。<br>在STM32的应用中，除了必须用开漏模式的场合，我们都习惯使用推挽输出模式。</p>
+<h3 id="输出数据寄存器"><a href="#输出数据寄存器" class="headerlink" title="输出数据寄存器"></a>输出数据寄存器</h3><p>双MOS 管结构电路的输入信号，是由GPIO“输出数据寄存器GPIOx_ODR”提供的，因此我们通过修改输出数据寄存器的值就可以修改GPIO引脚的输出电平。而“置位/复位寄存器GPIOx_BSRR”可以通过修改输出数据寄存器的值从而影响电路的输出。      </p>
+<h3 id="复用功能输出"><a href="#复用功能输出" class="headerlink" title="复用功能输出"></a>复用功能输出</h3><p>“复用功能输出”中的“复用”是指STM32 的其它片上外设对GPIO 引脚进行控制，此时GPIO 引脚用作该外设功能的一部分，算是第二用途。从其它外设引出来的“复用功能输出信号”与GPIO 本身的数据据寄存器都连接到双MOS 管结构的输入中，通过图中的梯形结构作为开关切换选择。</p>
+<h3 id="输入数据寄存器"><a href="#输入数据寄存器" class="headerlink" title="输入数据寄存器"></a>输入数据寄存器</h3><p>看GPIO 结构框图的上半部分，它是GPIO引脚经过上、下拉电阻后引入的，它连接到<strong>施密特触发器</strong>，信号经过触发器后，模拟信号转化为0、1的数字信号，然后存储在“输入数据寄存器GPIOx_IDR”中，通过读取该寄存器就可以了解GPIO引脚的电平状态。</p>
+<h3 id="复用功能输入"><a href="#复用功能输入" class="headerlink" title="复用功能输入"></a>复用功能输入</h3><p>与“复用功能输出”模式类似，在“复用功能输出模式”时，GPIO 引脚的信号传输到STM32 其它片上外设，由该外设读取引脚状态。同样，如我们使用USART 串口通讯时，需要用到某个GPIO 引脚作为通讯通讯接收引脚，这个时候就可以把该GPIO 引脚配置成USART 串口复用功能，使USART 可以通过该通讯引脚的接收远端数据。</p>
+<h3 id="模拟输入输出"><a href="#模拟输入输出" class="headerlink" title="模拟输入输出"></a>模拟输入输出</h3><p>GPIO 引脚用于ADC 采集电压的输入通道时，用作“模拟输入”功能，此时信号是<strong>不经过施密特触发器</strong>的，因为经过施密特触发器后信号只有0、1 两种状态，所以ADC 外设要采集到原始的模拟信号，信号源输入必须在施密特触发器之前。类似地，当GPIO 引脚用于DAC 作为模拟电压输出通道时，此时作为“模拟输出”功能，DAC 的模拟信号输出就不经过双MOS 管结构了，在GPIO 结构框图的右下角处，模拟信号直接输出到引脚。同时，当GPIO <strong>用于模拟功能时(包括输入输出)，引脚的上、下拉电阻是不起作用的，这个时候即使在寄存器配置了上拉或下拉模式，也不会影响到模拟信号的输入输出</strong>。</p>
+<h2 id="GPIO-工作模式"><a href="#GPIO-工作模式" class="headerlink" title="GPIO 工作模式"></a>GPIO 工作模式</h2><h3 id="输入模式（上拉、下拉、浮空）"><a href="#输入模式（上拉、下拉、浮空）" class="headerlink" title="输入模式（上拉、下拉、浮空）"></a>输入模式（上拉、下拉、浮空）</h3><p>在输入模式时，施密特触发器打开，输出被禁止。数据寄存器每隔1 个AHB1 时钟周期更新一次，可通过<strong>输入数据寄存器GPIOx_IDR</strong> 读取I/O 状态。</p>
+<h3 id="输出模式-推挽-开漏，上拉-下拉"><a href="#输出模式-推挽-开漏，上拉-下拉" class="headerlink" title="输出模式(推挽/开漏，上拉/下拉)"></a>输出模式(推挽/开漏，上拉/下拉)</h3><p>于输出模式时，可使用上拉、下拉模式或浮空模式。但此时由于输出模式时引脚电平会受到<strong>ODR 寄存器</strong>影响，而ODR 寄存器对应引脚的位为0，即引脚初始化后默认输出低电平，所以在这种情况下，<strong>上拉只起到小幅提高输出电流能力，但不会影响引脚的默认状态</strong>.</p>
+<h3 id="复用功能-推挽-开漏，上拉-下拉"><a href="#复用功能-推挽-开漏，上拉-下拉" class="headerlink" title="复用功能(推挽/开漏，上拉/下拉)"></a>复用功能(推挽/开漏，上拉/下拉)</h3><p>复用功能模式中，输出使能，输出速度可配置，可工作在开漏及推挽模式，但是输出信号源于其它外设，<strong>输出数据寄存器GPIOx_ODR 无效</strong>；输入可用，通过输入数据寄存器可获取I/O 实际状态，但一般直接用外设的寄存器来获取该数据信号。用于复用功能时，可使用上拉、下拉模式或浮空模式。同输出模式，在这种情况下，<strong>初始化后引脚默认输出低电平，上拉只起到小幅提高输出电流能力，但不会影响引脚的默认状态</strong>。</p>
+<h3 id="模拟输入输出-1"><a href="#模拟输入输出-1" class="headerlink" title="模拟输入输出"></a>模拟输入输出</h3><p>模拟输入输出模式中，双MOS 管结构被关闭，<strong>施密特触发器停用</strong>，上/下拉也被禁止。其它外设通过模拟通道进行输入输出。  </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stm32/" rel="tag"># stm32</a>
+              <a href="/tags/GPIO/" rel="tag"># GPIO</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AF%84%E5%AD%98%E5%99%A8/" rel="prev" title="stm32寄存器">
+      <i class="fa fa-chevron-left"></i> stm32寄存器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%92%8C%E6%80%BB%E7%BA%BF%E6%9E%84%E6%9E%B6/" rel="next" title="stm32存储器和总线框架">
+      stm32存储器和总线框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO"><span class="nav-number">1.</span> <span class="nav-text">GPIO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本结构"><span class="nav-number">1.1.</span> <span class="nav-text">基本结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#保护二极管及上、下拉电阻"><span class="nav-number">1.1.1.</span> <span class="nav-text">保护二极管及上、下拉电阻</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P-MOS-管和N-MOS管"><span class="nav-number">1.1.2.</span> <span class="nav-text">P-MOS 管和N-MOS管</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出数据寄存器"><span class="nav-number">1.1.3.</span> <span class="nav-text">输出数据寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复用功能输出"><span class="nav-number">1.1.4.</span> <span class="nav-text">复用功能输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入数据寄存器"><span class="nav-number">1.1.5.</span> <span class="nav-text">输入数据寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复用功能输入"><span class="nav-number">1.1.6.</span> <span class="nav-text">复用功能输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟输入输出"><span class="nav-number">1.1.7.</span> <span class="nav-text">模拟输入输出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO-工作模式"><span class="nav-number">1.2.</span> <span class="nav-text">GPIO 工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#输入模式（上拉、下拉、浮空）"><span class="nav-number">1.2.1.</span> <span class="nav-text">输入模式（上拉、下拉、浮空）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出模式-推挽-开漏，上拉-下拉"><span class="nav-number">1.2.2.</span> <span class="nav-text">输出模式(推挽&#x2F;开漏，上拉&#x2F;下拉)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复用功能-推挽-开漏，上拉-下拉"><span class="nav-number">1.2.3.</span> <span class="nav-text">复用功能(推挽&#x2F;开漏，上拉&#x2F;下拉)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模拟输入输出-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">模拟输入输出</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yezh"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">yezh</p>
+  <div class="site-description" itemprop="description">what's you problem</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zdzh" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zdzh" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yezh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
