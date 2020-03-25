@@ -23,26 +23,26 @@
   <meta name="description" content="what&#39;s you problem">
 <meta property="og:type" content="website">
 <meta property="og:title" content="yezh&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/django/index.html">
+<meta property="og:url" content="http://yoursite.com/page/5/index.html">
 <meta property="og:site_name" content="yezh&#39;s blog">
 <meta property="og:description" content="what&#39;s you problem">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="yezh">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/tags/django/">
+<link rel="canonical" href="http://yoursite.com/page/5/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
+    isHome : true,
     isPost : false
   };
 </script>
 
-  <title>标签: django | yezh's blog</title>
+  <title>yezh's blog</title>
   
 
 
@@ -157,49 +157,152 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+        
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">django
-          <small>标签</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E9%97%AE%E9%A2%98/keil/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E9%97%AE%E9%A2%98/keil/" class="post-title-link" itemprop="url">keil编译环境</a>
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2020</h1>
+          <h1 id="KEIL"><a href="#KEIL" class="headerlink" title="KEIL"></a>KEIL</h1><h2 id="使用keil过程中遇到的问题"><a href="#使用keil过程中遇到的问题" class="headerlink" title="使用keil过程中遇到的问题"></a>使用keil过程中遇到的问题</h2><h3 id="调试时，程序无法进入-main"><a href="#调试时，程序无法进入-main" class="headerlink" title="调试时，程序无法进入_main"></a>调试时，程序无法进入_main</h3><p><img src="assets/1563448750815.png" alt="程序停留处"></p>
+<h3 id="链接时提示空间不足"><a href="#链接时提示空间不足" class="headerlink" title="链接时提示空间不足"></a>链接时提示空间不足</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">..\OBJ\WWDG.axf: Error: L6406E: No space in execution regions with .ANY selector matching mlan_sta_ioctl.o(.text).</span><br></pre></td></tr></table></figure>
+<ul>
+<li>原因：代码和数据占据的空间太大，超出芯片空间</li>
+<li>解决方法：  </li>
+</ul>
+<ol>
+<li>更改使用内存更大的芯片</li>
+<li>修改rom和ram大小<br><img src="assets/1563448778572.png" alt="targrt">   </li>
+</ol>
+<h2 id="KEIL信息"><a href="#KEIL信息" class="headerlink" title="KEIL信息"></a>KEIL信息</h2><h3 id="程序的运行与存储"><a href="#程序的运行与存储" class="headerlink" title="程序的运行与存储"></a>程序的运行与存储</h3><table>
+<thead>
+<tr>
+<th>程序组件</th>
+<th>所属类别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>机器代码指令</td>
+<td>Code</td>
+</tr>
+<tr>
+<td>常量</td>
+<td>RO-data</td>
+</tr>
+<tr>
+<td>初值非0的全局变量</td>
+<td>RW-data</td>
+</tr>
+<tr>
+<td>初值为0的全局变量</td>
+<td>ZI-data</td>
+</tr>
+<tr>
+<td>局部变量</td>
+<td>ZI-data栈空间</td>
+</tr>
+<tr>
+<td>使用malloc动态分配的空间</td>
+<td>ZI-data堆空间</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>程序状态与区域</th>
+<th>组成</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>程序运行时的只读区域（RO）</td>
+<td>Code+RO data</td>
+</tr>
+<tr>
+<td>程序运行时的可读区域（RW）</td>
+<td>RW data +ZI data</td>
+</tr>
+<tr>
+<td>程序存储是占用的ROM区</td>
+<td>Code+RO data + RW data</td>
+</tr>
+<tr>
+<td>###</td>
+<td></td>
+</tr>
+</tbody></table>
+
+      
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-03-01T17:35:43+08:00"
-              content="2020-03-01">
-          03-01
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/03/01/django-url/" itemprop="url">
-            <span itemprop="name">Django url参数传递</span>
-          </a>
-      </h2>
-
-    </header>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+  </nav>
 
 
 
@@ -266,19 +369,19 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">50</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

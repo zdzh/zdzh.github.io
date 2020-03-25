@@ -20,21 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="django中有时候需要在url中传入参数用来生成特定的url来指定某个具体对象。 url参数转化器有如下几种：  str：除了斜杠&#x2F;以外所有的字符都是可以的。 int：只有是一个或者多个的阿拉伯数字。 path：所有的字符都是满足的。 uuid：只有满足uuid.uuid4()这个函数返回的字符串的格式。 slug：英文中的横杆或者英文字符或者阿拉伯数字或者下划线才满足。">
+  <meta name="description" content="docker container   docker container attach 连接容器到本地的stdin、stdout、stderr    docker container commit 根据容器创建镜像   docker container cp 在容器和本地文件系统之间复制文件   docker container create 创建新容器   docker container d">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Django url参数传递">
-<meta property="og:url" content="http://yoursite.com/2020/03/01/django-url/index.html">
+<meta property="og:title" content="docker命令行">
+<meta property="og:url" content="http://yoursite.com/2020/03/15/dockerCLICommand/index.html">
 <meta property="og:site_name" content="yezh&#39;s blog">
-<meta property="og:description" content="django中有时候需要在url中传入参数用来生成特定的url来指定某个具体对象。 url参数转化器有如下几种：  str：除了斜杠&#x2F;以外所有的字符都是可以的。 int：只有是一个或者多个的阿拉伯数字。 path：所有的字符都是满足的。 uuid：只有满足uuid.uuid4()这个函数返回的字符串的格式。 slug：英文中的横杆或者英文字符或者阿拉伯数字或者下划线才满足。">
+<meta property="og:description" content="docker container   docker container attach 连接容器到本地的stdin、stdout、stderr    docker container commit 根据容器创建镜像   docker container cp 在容器和本地文件系统之间复制文件   docker container create 创建新容器   docker container d">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-01T09:35:43.000Z">
-<meta property="article:modified_time" content="2020-03-13T09:26:07.218Z">
+<meta property="article:published_time" content="2020-03-15T04:50:33.000Z">
+<meta property="article:modified_time" content="2020-03-15T05:42:55.172Z">
 <meta property="article:author" content="yezh">
-<meta property="article:tag" content="django">
-<meta property="article:tag" content="url">
+<meta property="article:tag" content="docker - docker CLI">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2020/03/01/django-url/">
+<link rel="canonical" href="http://yoursite.com/2020/03/15/dockerCLICommand/">
 
 
 <script id="page-configurations">
@@ -46,7 +45,7 @@
   };
 </script>
 
-  <title>Django url参数传递 | yezh's blog</title>
+  <title>docker命令行 | yezh's blog</title>
   
 
 
@@ -166,7 +165,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/django-url/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/15/dockerCLICommand/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -179,7 +178,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Django url参数传递
+          docker命令行
         </h1>
 
         <div class="post-meta">
@@ -188,23 +187,17 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-03-01 17:35:43" itemprop="dateCreated datePublished" datetime="2020-03-01T17:35:43+08:00">2020-03-01</time>
+              <time title="创建时间：2020-03-15 12:50:33 / 修改时间：13:42:55" itemprop="dateCreated datePublished" datetime="2020-03-15T12:50:33+08:00">2020-03-15</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/django/" itemprop="url" rel="index"><span itemprop="name">django</span></a>
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
                 </span>
             </span>
 
@@ -221,15 +214,110 @@
       
         <a id="more"></a>
 
-<p> django中有时候需要在url中传入参数用来生成特定的url来指定某个具体对象。</p>
-<p>url参数转化器有如下几种：</p>
-<ol>
-<li>str：除了斜杠<code>/</code>以外所有的字符都是可以的。</li>
-<li>int：只有是一个或者多个的阿拉伯数字。</li>
-<li>path：所有的字符都是满足的。</li>
-<li>uuid：只有满足<code>uuid.uuid4()</code>这个函数返回的字符串的格式。</li>
-<li>slug：英文中的横杆或者英文字符或者阿拉伯数字或者下划线才满足。</li>
-</ol>
+<h2 id="docker-container"><a href="#docker-container" class="headerlink" title="docker container"></a>docker container</h2><table>
+<thead>
+<tr>
+<th><a href="https://docs.docker.com/engine/reference/commandline/container_attach/" target="_blank" rel="noopener">docker container attach</a></th>
+<th>连接容器到本地的stdin、stdout、stderr</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_commit/" target="_blank" rel="noopener">docker container commit</a></td>
+<td>根据容器创建镜像</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_cp/" target="_blank" rel="noopener">docker container cp</a></td>
+<td>在容器和本地文件系统之间复制文件</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_create/" target="_blank" rel="noopener">docker container create</a></td>
+<td>创建新容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_diff/" target="_blank" rel="noopener">docker container diff</a></td>
+<td>查看容器内文件修改</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_exec/" target="_blank" rel="noopener">docker container exec</a></td>
+<td>在一个容器中运行命令</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_export/" target="_blank" rel="noopener">docker container export</a></td>
+<td>将容器的文件系统以tar格式打包出来</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_inspect/" target="_blank" rel="noopener">docker container inspect</a></td>
+<td>显示容器的详细信息</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_kill/" target="_blank" rel="noopener">docker container kill</a></td>
+<td>杀死正在运行的容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_logs/" target="_blank" rel="noopener">docker container logs</a></td>
+<td>查看容器运行日志</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_ls/" target="_blank" rel="noopener">docker container ls</a></td>
+<td>列出系统中的容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_pause/" target="_blank" rel="noopener">docker container pause</a></td>
+<td>暂停容器内所有进程的运行</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_port/" target="_blank" rel="noopener">docker container port</a></td>
+<td>列出容器的端口映射</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_prune/" target="_blank" rel="noopener">docker container prune</a></td>
+<td>删除所有已停止的容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_rename/" target="_blank" rel="noopener">docker container rename</a></td>
+<td>重命名容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_restart/" target="_blank" rel="noopener">docker container restart</a></td>
+<td>重启容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_rm/" target="_blank" rel="noopener">docker container rm</a></td>
+<td>删除容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_run/" target="_blank" rel="noopener">docker container run</a></td>
+<td>在新容器内运行命令</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_start/" target="_blank" rel="noopener">docker container start</a></td>
+<td>启动已停止的容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_stats/" target="_blank" rel="noopener">docker container stats</a></td>
+<td>实时显示容器资源使用情况</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_stop/" target="_blank" rel="noopener">docker container stop</a></td>
+<td>停止正在运行的容器</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_top/" target="_blank" rel="noopener">docker container top</a></td>
+<td>显示容器内运行的进程</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_unpause/" target="_blank" rel="noopener">docker container unpause</a></td>
+<td>取消容器内所有进程的暂停状态</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_update/" target="_blank" rel="noopener">docker container update</a></td>
+<td>更新容器配置</td>
+</tr>
+<tr>
+<td><a href="https://docs.docker.com/engine/reference/commandline/container_wait/" target="_blank" rel="noopener">docker container wait</a></td>
+<td>在容器停止一直堵塞，之后输入容器退出状态代码</td>
+</tr>
+</tbody></table>
 
     </div>
 
@@ -239,8 +327,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/django/" rel="tag"># django</a>
-              <a href="/tags/url/" rel="tag"># url</a>
+              <a href="/tags/docker-docker-CLI/" rel="tag"># docker - docker CLI</a>
           </div>
 
         
@@ -252,7 +339,10 @@
     <a href="/2019/08/23/%E5%8D%81%E4%BA%8C%E5%9B%A0%E7%B4%A0/" rel="prev" title="十二因素">
       <i class="fa fa-chevron-left"></i> 十二因素
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/16/%E5%89%8D%E7%AB%AF%E5%AD%A6%E4%B9%A0/" rel="next" title="前端学习">
+      前端学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -312,6 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-container"><span class="nav-number">1.</span> <span class="nav-text">docker container</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -327,19 +418,19 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">50</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

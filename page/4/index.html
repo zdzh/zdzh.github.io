@@ -162,6 +162,301 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">计算机网络</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-17 16:40:59" itemprop="dateCreated datePublished" datetime="2019-07-17T16:40:59+08:00">2019-07-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="计算机网络学习笔记"><a href="#计算机网络学习笔记" class="headerlink" title="计算机网络学习笔记"></a>计算机网络学习笔记</h1><h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><h3 id="局域网和广域网的区别"><a href="#局域网和广域网的区别" class="headerlink" title="局域网和广域网的区别"></a>局域网和广域网的区别</h3><p>广域网（wide area network，WAN）也是由具有通信能力的设备相互连接而形成的。可是，局域网和广域网有一些不同。局域网通常覆盖范围受限，可以覆盖一间办公室、一栋大楼或一个校园；广域网则具有更广的地理覆盖范围，可以覆盖一个城市、一个省、一个国家甚至整个世界。局域网互联主机；广域网互联交换机、路由器、调制解调器等连接设备。局域网通常由使用它的组织拥有；广域网通常由通信公司建设和运营，使用它的组织进行租用。我们看看目前使用的两种典型的广域网：点到点广域网和交换式广域网。     </p>
+<h3 id="网络层次结构"><a href="#网络层次结构" class="headerlink" title="网络层次结构"></a>网络层次结构</h3><p><img src="assets/1563355028570.png" alt="1563355028570"></p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>俩个应用层之间的逻辑连接是<strong>端到端</strong>的，其通信处于两个进程之间。应用层交换的数据成为消息（message）</p>
+<p>其常见的协议有http，ssh，smtp，ftp等</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>两个传输层的逻辑连接也是端到端的。其常见协议有tcp，udp，sctp。TCP中的数据称为段（segment），UDP中的数据称为用户报文（user datagram)</p>
+<p>TCP是面向连接的协议，，其提供流量控制、差错控制、拥塞控制</p>
+<p>UDP是无连接协议，其尽最大努力交付数据，但不保证对端一定接收到完整数据。    </p>
+<h3 id="可靠传输"><a href="#可靠传输" class="headerlink" title="可靠传输"></a>可靠传输</h3><p>TCP的可靠数据传输形式如下所示，发送端按序发送数据分组，接收方接受到一个数据分组后发送一个ACK确认，接受方收到ACK后才开始发送下一个数据分组。</p>
+<p><img src="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563416125171.png" alt="1563416125171"></p>
+<p>发送方在规定时间内未收到ACK时，会重发当前数据分组。在此过程中数据分组和ACK均可能在传输过程中丢失，丢失数据分组会导致接收方无法收到数据分组而不发送ACK，丢失ACK会导致发送方无法收到ACK，两者中的任意一者丢失都会导致发送方无法接收到ACK。此外，由于网络影响，ACK可能会延时到达，甚至在发送端超时重发后到达，对于延时到达的重复的数据分组和ACK，发送方和接收方均不在做出反应。</p>
+<p>接收方会对接收到的数据分组进行差错检验，若检验出错，接收方不发送ACK，等待发送方超时重传。</p>
+<p>上述形式会导致发送方和接收方花费大量时间等待对方应答，对带宽利用率低，因此，实际使用时采用流水线的方式对数据进行传输。</p>
+<p><img src="%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C.assets/1563417379179.png" alt="1563417379179"></p>
+<p>在上图中，发送方一次发送多个数据分组，接受方同时接收多个数据分组并针对每个数据分组发送ACK，当发送方收到所有ACK后，开始发送下一批数据分组。为了解决丢包问题，流水线采用回退N步和选择重传的方式。</p>
+<p>回退N步：接收方按序接收数据分组，若接收到一个失序分组（即此分组前存在未接收到的分组）则丢弃分组，同时接收方只为按序分组发送ACK，若发送方收到某分组的ACK而未收到下一个分组的ACK，则认为此数据分组之前的数据全部传输成功，此分组之后的数据全部丢失，发送方开始重传之后的数据。</p>
+<p>选择重传：接收方能够接收失序数据分组，且为每个数据分组发送ACK，接收方只重传为收到ACK的数据分组而不重传其之后的数据分组。</p>
+<h3 id="拥塞控制和流量控制"><a href="#拥塞控制和流量控制" class="headerlink" title="拥塞控制和流量控制"></a>拥塞控制和流量控制</h3><p>流量控制是针对接收方的接收能力的，当接收方无法及时处理发送方发送的大量数据从而导致数据丢失时，发送方会根据流量控制减少数据发送量。流量控制主要靠接收窗口实现，接收方通过接收窗口告知发送方接收能力。</p>
+<p>拥塞控制是针对网络传输能力的，当网络繁忙时，发送的数据可能出现大量的丢包或延时，这时发送方会控制数据发送量以减轻网络负担。TCP采用拥塞窗口来解决拥塞问题，拥塞窗口会限制 数据发送速率。TCP采用的拥塞控制算法包括慢启动，拥塞避免，快恢复</p>
+<p>慢启动，传输开始时，发送方会以大小为1的拥塞窗口开始，并以指数级增加拥塞窗口大小，直至发现网络拥塞达到某一程度时，结束指数增长，转为拥塞避免。</p>
+<p>拥塞避免：以较平缓的方法增加拥塞窗口，当丢包率达到某种程度时，将拥塞窗口减半，并启动快恢复</p>
+<p>快恢复：拥塞窗口不再从1开始，但执行与慢启动和拥塞避免中相同的操作</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>网络层的通信时主机到主机的。其主要的协议时IP协议，IP协议是无连接协议，不提供流量控制和差错控制。网络中的数据称为数据报（datagram）</p>
+<p>网络层还包括ICMP、IGMP、DHCP、ARP等辅助协议帮助完成 IP转发和路由工作。</p>
+<h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><p>数据链路层中的数据单元称为帧。</p>
+<h2 id="交换机、网桥与路由器"><a href="#交换机、网桥与路由器" class="headerlink" title="交换机、网桥与路由器"></a>交换机、网桥与路由器</h2><p><strong>网桥（Bridge)</strong>也称为桥接器，是连接两个局域网的存储转发设备，用它可以使完全具有相同或相似体系结构网络系统的连接，这样不但能扩展网络的距离或范围，而且可提高网络的性能、可靠性和安全性。网桥工作在OSI参考模型的数据链路层（第二层），将两个LAN连起来，根据MAC地址来转发帧，可以看作一个“低层的路由器”（路由器工作在网络层，根据网络地址如IP地址进行转发）。</p>
+<p><strong>交换机</strong>位于链路层，其自身对子网中的主机和路由器时透明的，交换机实质是一个多接口的网桥。交换机具有并行性，能够同时连通多对接口，使多台主机同时通信且彼此之间独占传输媒体，无碰撞发生，而网桥只能一次分析和转发一个帧。</p>
+<p>在数据传输过程中，交换机在数据链路层上对数据进行转发，通过识别目标主体的MAC地址决定将数据传输到哪个链路上 ；路由器在网络层对数据进行转发，也就是说路由器在转发过程中会识别传输数据的IP地址，并在链路层将IP地址转化为MAC地址传递给一个数据接收主体。对于路由器和交换机来说，其最终都是通过mac来唯一区分一个主体的，但在路由器中，会将mac地址映射为在该局域网内唯一的ip地址，作为设备的标记。</p>
+<p><img src="assets/1563354050330.png" alt="1563354050330"></p>
+<p>上述过程中，交换机不会改变数据的内容，但路由器可能会修改网络层以下的的数据内容，比如将数据分组切片。路由器不能修改网络层以上的数据内容，也就是说，对于两台主机而言，无论中间经过多少路由器，其接收端从网络层获取的数据一定与发送端传输到网络层的数据一致。</p>
+<p><img src="assets/1563354812934.png" alt="1563354812934"></p>
+<h2 id="网络隧道"><a href="#网络隧道" class="headerlink" title="网络隧道"></a>网络隧道</h2><p>隧道协议（Tunneling Protocol）是一类网络协议，它是一种数据包封装技术，它是将原始IP包（其报头包含原始发送者和最终目的地）封装在另一个数据包（称为封装的IP包）的数据净荷中进行传输。使用隧道的原因是在不兼容的网络上传输数据，或在不安全网络上提供一个安全路径。隧道协议通常（但并非总是）在一个比负载协议还高的层级，或同一层。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/15/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%88GitHub-hexo%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/15/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%88GitHub-hexo%EF%BC%89/" class="post-title-link" itemprop="url">创建博客（GitHub+hexo）</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-15 19:26:13" itemprop="dateCreated datePublished" datetime="2019-07-15T19:26:13+08:00">2019-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="搭建博客"><a href="#搭建博客" class="headerlink" title="搭建博客"></a>搭建博客</h1><h2 id="使用github搭建博客"><a href="#使用github搭建博客" class="headerlink" title="使用github搭建博客"></a>使用github搭建博客</h2><h3 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h3><p>在自己的GitHub账号下创建仓库<code>&lt;账号名&gt;.github.io</code></p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563075883725.png" alt="1563075883725.png"></p>
+<p>在仓库的设置里面可以看到<code>github pages</code>内容，其中可以看到博客对应的链接，如下图的<a href="https://zdzh.github.io/" target="_blank" rel="noopener">https://zdzh.github.io/</a>.</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563076098501.png" alt="1563076098501.png"></p>
+<h3 id="选择主题"><a href="#选择主题" class="headerlink" title="选择主题"></a>选择主题</h3><p>点击<code>choose a theme</code> 可以选择博客显示主题</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563076525871.png" alt="1563076525871.png"><br>在上面一栏中选择自己喜欢的主题，然后点击<code>selecet theme</code>选择主题</p>
+<h3 id="安装node-js和Hexo"><a href="#安装node-js和Hexo" class="headerlink" title="安装node.js和Hexo"></a>安装node.js和Hexo</h3><ol>
+<li><p>在Node.js<a href="https://nodejs.org/en/" target="_blank" rel="noopener">官网</a>上下载node.js，按提示安装软件。安装完成后输入<code>node -v</code>可以查看是否安装成功以及安装的版本</p>
+</li>
+<li><p>安装hexo</p>
+<p>Hexo是一个简单、快速、强大的基于 Github Pages 的博客发布工具，支持Markdown格式，有众多优秀插件和主题。<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">hexo官网</a>               <a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">hexo GitHub</a></p>
+<p>在自己的电脑中创建一个空文件夹作为博客文件存放地址。使用命令行进入该目录下，输入以下指令安装Hexo</p>
+</li>
+</ol>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>使用命令行在上述路径中输入<code>hexo init</code>初始化文件夹，该文件夹必须是空文件夹否则初始化失败，指令运行成功后，会在该文件夹下创建若干文件</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563083345803.png" alt="1563083345803.png"></p>
+<p>其中scaffolds是模板文件夹，当您新建文章时，Hexo 会根据 scaffold 来建立文件。Hexo的模板是指在新建的markdown文件中默认填充的内容。例如，如果您修改scaffold/post.md中的Front-matter内容，那么每次新建一篇文章时都会包含这个修改。</p>
+<p>source资源文件夹是存放用户资源的地方。除 <code>_posts</code> 文件夹之外，开头命名为 <code>_</code> (下划线)的文件 / 文件夹和隐藏的文件将会被忽略。Markdown 和 HTML 文件会被解析并放到 <code>public</code> 文件夹，而其他文件会被拷贝过去。</p>
+<p>themes主题文件夹。Hexo 会根据主题来生成静态页面。</p>
+<p>之后，输入以下指令打开服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g 		<span class="comment"># 生成静态网页</span></span><br><span class="line">hexo s 			<span class="comment">#打开本地服务器</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563083467390" alt="1563083467390"></p>
+<p>打开浏览器，输入<a href="http://localhost:4000/,可以查看hexo预先生成的网页。若网页无法打开，则有可能是端口占用问题，可以查看文档如何修改端口。" target="_blank" rel="noopener">http://localhost:4000/,可以查看hexo预先生成的网页。若网页无法打开，则有可能是端口占用问题，可以查看文档如何修改端口。</a></p>
+<h3 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h3><p>完成以上步骤后，网站的基本框架已经搭建完成，下一步是将网站的主题更换为自己喜欢的样式</p>
+<p>可以自行在网上搜索自己喜欢的主题，选中主题后，找到其对应的仓库地址，将其克隆到当前目录的themes下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/idhyt/hexo-theme-next.git</span><br></pre></td></tr></table></figure>
+
+<p>克隆完成后，在themes可以看到克隆下来的文件</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563114908429" alt="1563114908429"></p>
+<p>修改_config.yml文件，将<code>theme</code>对应字段改为主题名，及上面克隆下来的文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theme: hexo-theme-next</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>hexo g</code>重新生成。若这一步出现问题，可以执行<code>hexo clean</code>清除之前的内容，之后再重新生成和发布。</p>
+<h3 id="添加页面"><a href="#添加页面" class="headerlink" title="添加页面"></a>添加页面</h3><p>使用<code>hexo new page &lt;filename&gt;</code>可以在网站上添加页面，现在使用以下语句添加关于，标签和分类页面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo new page about                &#x2F;&#x2F;关于界面</span><br><span class="line">hexo new page categories          &#x2F;&#x2F;分类界面</span><br><span class="line">hexo new page tags               &#x2F;&#x2F;标签界面</span><br></pre></td></tr></table></figure>
+
+<p>执行以上语句后会在_posts路径下生成相应的文件夹和目录，在里面的文件中编辑即可修改相应页面</p>
+<p>在categories.md中添加<code>type: &quot;categories&quot;</code>，如下所示</p>
+<p><img src="https://raw.githubusercontent.com/zdzh/pothos/master/img/1563279199674.png" alt="1563279199674.png"></p>
+<p>按同样的方法在about.md中添加<code>type:about</code>,在tags.md中添加<code>type:tags</code></p>
+<h3 id="上传到github"><a href="#上传到github" class="headerlink" title="上传到github"></a>上传到github</h3><p>上传前首先需要下载一个插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>配置<code>_config.yml</code>,修改<code>deploy</code>字段为以下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: git@github.com:zdzh/zdzh.github.io.git       <span class="comment">#在github中生成的仓库链接</span></span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+
+<p>最后输入<code>hexo -d</code>上传到GitHub即可</p>
+<h3 id="编写文章"><a href="#编写文章" class="headerlink" title="编写文章"></a>编写文章</h3><p>编写文章时，使用<code>hexo n &lt;filename&gt;</code>生成空白markdown文档，在markdown文档中输入自己的博客内容。</p>
+<p>在文档的开头处，Front-matter 是文件最上方以 <code>---</code> 分隔的区域，用于指定个别文件的变量，举例来说：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">---title: Hello Worlddate: 2013&#x2F;7&#x2F;13 20:46:25---</span><br></pre></td></tr></table></figure>
+
+<p>以下是预先定义的参数，您可在模板中使用这些参数值并加以利用。</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+<th align="left">默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>layout</code></td>
+<td align="left">布局</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>title</code></td>
+<td align="left">标题</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>date</code></td>
+<td align="left">建立日期</td>
+<td align="left">文件建立日期</td>
+</tr>
+<tr>
+<td align="left"><code>updated</code></td>
+<td align="left">更新日期</td>
+<td align="left">文件更新日期</td>
+</tr>
+<tr>
+<td align="left"><code>comments</code></td>
+<td align="left">开启文章的评论功能</td>
+<td align="left">true</td>
+</tr>
+<tr>
+<td align="left"><code>tags</code></td>
+<td align="left">标签（不适用于分页）</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>categories</code></td>
+<td align="left">分类（不适用于分页）</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>permalink</code></td>
+<td align="left">覆盖文章网址</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>只有文章支持分类和标签，您可以在 Front-matter 中设置。在其他系统中，分类和标签听起来很接近，但是在 Hexo 中两者有着明显的差别：分类具有顺序性和层次性，也就是说 <code>Foo, Bar</code> 不等于 <code>Bar, Foo</code>；而标签没有顺序和层次。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">categories:</span><br><span class="line">- Diary</span><br><span class="line">tags:</span><br><span class="line">- PS3</span><br><span class="line">- Games</span><br></pre></td></tr></table></figure>
+
+<h3 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h3><p>使用<code>hexo n &lt;filename&gt;</code>自动创建markdown文件，文件位于<code>..\source\_posts</code>下。也可以自己新建markdown文件。</p>
+<p>文章编写完成后，重新运行以下指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/EXTI%E2%80%94%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD(%E4%BA%8B%E4%BB%B6)%E6%8E%A7%E5%88%B6%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1283,150 +1578,11 @@ wReservedl
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E9%97%AE%E9%A2%98/keil/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yezh">
-      <meta itemprop="description" content="what's you problem">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="yezh's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/18/STM32%E5%8D%95%E7%89%87%E6%9C%BA/%E9%97%AE%E9%A2%98/keil/" class="post-title-link" itemprop="url">keil编译环境</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-18 19:26:13" itemprop="dateCreated datePublished" datetime="2019-05-18T19:26:13+08:00">2019-05-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-13 17:26:07" itemprop="dateModified" datetime="2020-03-13T17:26:07+08:00">2020-03-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="KEIL"><a href="#KEIL" class="headerlink" title="KEIL"></a>KEIL</h1><h2 id="使用keil过程中遇到的问题"><a href="#使用keil过程中遇到的问题" class="headerlink" title="使用keil过程中遇到的问题"></a>使用keil过程中遇到的问题</h2><h3 id="调试时，程序无法进入-main"><a href="#调试时，程序无法进入-main" class="headerlink" title="调试时，程序无法进入_main"></a>调试时，程序无法进入_main</h3><p><img src="assets/1563448750815.png" alt="程序停留处"></p>
-<h3 id="链接时提示空间不足"><a href="#链接时提示空间不足" class="headerlink" title="链接时提示空间不足"></a>链接时提示空间不足</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">..\OBJ\WWDG.axf: Error: L6406E: No space in execution regions with .ANY selector matching mlan_sta_ioctl.o(.text).</span><br></pre></td></tr></table></figure>
-<ul>
-<li>原因：代码和数据占据的空间太大，超出芯片空间</li>
-<li>解决方法：  </li>
-</ul>
-<ol>
-<li>更改使用内存更大的芯片</li>
-<li>修改rom和ram大小<br><img src="assets/1563448778572.png" alt="targrt">   </li>
-</ol>
-<h2 id="KEIL信息"><a href="#KEIL信息" class="headerlink" title="KEIL信息"></a>KEIL信息</h2><h3 id="程序的运行与存储"><a href="#程序的运行与存储" class="headerlink" title="程序的运行与存储"></a>程序的运行与存储</h3><table>
-<thead>
-<tr>
-<th>程序组件</th>
-<th>所属类别</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>机器代码指令</td>
-<td>Code</td>
-</tr>
-<tr>
-<td>常量</td>
-<td>RO-data</td>
-</tr>
-<tr>
-<td>初值非0的全局变量</td>
-<td>RW-data</td>
-</tr>
-<tr>
-<td>初值为0的全局变量</td>
-<td>ZI-data</td>
-</tr>
-<tr>
-<td>局部变量</td>
-<td>ZI-data栈空间</td>
-</tr>
-<tr>
-<td>使用malloc动态分配的空间</td>
-<td>ZI-data堆空间</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>程序状态与区域</th>
-<th>组成</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>程序运行时的只读区域（RO）</td>
-<td>Code+RO data</td>
-</tr>
-<tr>
-<td>程序运行时的可读区域（RW）</td>
-<td>RW data +ZI data</td>
-</tr>
-<tr>
-<td>程序存储是占用的ROM区</td>
-<td>Code+RO data + RW data</td>
-</tr>
-<tr>
-<td>###</td>
-<td></td>
-</tr>
-</tbody></table>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1494,19 +1650,19 @@ wReservedl
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">50</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
