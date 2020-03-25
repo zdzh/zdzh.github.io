@@ -20,17 +20,21 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="what&#39;s you problem">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yezh&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/NAT/index.html">
+  <meta name="description" content="记录在docker中使用k8s的基本用法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于kubernetes开发容器">
+<meta property="og:url" content="http://yoursite.com/2020/03/25/%E5%9F%BA%E4%BA%8Ekubernetes%E5%BC%80%E5%8F%91%E5%AE%B9%E5%99%A8/index.html">
 <meta property="og:site_name" content="yezh&#39;s blog">
-<meta property="og:description" content="what&#39;s you problem">
+<meta property="og:description" content="记录在docker中使用k8s的基本用法">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-25T12:36:56.000Z">
+<meta property="article:modified_time" content="2020-03-25T13:00:55.092Z">
 <meta property="article:author" content="yezh">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="kubernetes">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/tags/NAT/">
+<link rel="canonical" href="http://yoursite.com/2020/03/25/%E5%9F%BA%E4%BA%8Ekubernetes%E5%BC%80%E5%8F%91%E5%AE%B9%E5%99%A8/">
 
 
 <script id="page-configurations">
@@ -38,11 +42,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false
+    isPost : true
   };
 </script>
 
-  <title>标签: NAT | yezh's blog</title>
+  <title>基于kubernetes开发容器 | yezh's blog</title>
   
 
 
@@ -157,50 +161,96 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">NAT
-          <small>标签</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/25/%E5%9F%BA%E4%BA%8Ekubernetes%E5%BC%80%E5%8F%91%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yezh">
+      <meta itemprop="description" content="what's you problem">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yezh's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于kubernetes开发容器
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-25 20:36:56 / 修改时间：21:00:55" itemprop="dateCreated datePublished" datetime="2020-03-25T20:36:56+08:00">2020-03-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
+        <p>记录在docker中使用k8s的基本用法</p>
+<a id="more"></a>
+<h2 id="启用k8s"><a href="#启用k8s" class="headerlink" title="启用k8s"></a>启用k8s</h2><p>在window下使用k8s之前，需要在docker desktop中启动k8s，在设置<code>setting</code>中点击相应选项等待docker安装k8s即可</p>
+<h2 id="k8syaml"><a href="#k8syaml" class="headerlink" title="k8syaml"></a>k8syaml</h2><p>在Kubernetes中，所有的容器都安排为<code>pods</code>，<code>pods</code>共享一些资源共同位于容器组。<br>在实际应用，基本很少创建独立的<code>pods</code>;大部分的工作负荷都安排为<code>deployments</code>——由Kubernetes自动维护的可扩展的<code>pods</code>群体。<br>所有的Kubernetes对象可以而且应该在通过<em>Kubernetes YAML</em>文件中描述。这些YAML文件描述了应用程序所有的组件和配置，并可以用来方便地创建和销毁应用程序。<br><em>yaml</em>文件一般由以下几个部分组成：<br>内容|说明<br>—|—<br><code>apiVersion</code>| 说明使用的API版本<br> <code>kind</code>|   说明该对象的类型<br> <code>metadata</code>|  用于描述对象的元数据<br> <code>spec</code>|  描述对象的参数和配置等信息</p>
+<h2 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f file.yaml  # 通过yaml文件创建k8s应用</span><br><span class="line">kubectl delete -f file.yaml # 删除应用   </span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看相关信息</span></span><br><span class="line">kubectl get deployments</span><br><span class="line">kubectl get services</span><br></pre></td></tr></table></figure>
+
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-07-28T13:50:47+08:00"
-              content="2019-07-28">
-          07-28
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          </div>
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2019/07/28/nat/" itemprop="url">
-            <span itemprop="name">网络地址转换（NAT）</span>
-          </a>
-      </h2>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/19/test/" rel="prev" title="test">
+      <i class="fa fa-chevron-left"></i> test
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
@@ -251,6 +301,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用k8s"><span class="nav-number">1.</span> <span class="nav-text">启用k8s</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8syaml"><span class="nav-number">2.</span> <span class="nav-text">k8syaml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用指令"><span class="nav-number">3.</span> <span class="nav-text">常用指令</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
